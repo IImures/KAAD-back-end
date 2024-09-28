@@ -25,6 +25,9 @@ public class TeamMember {
     @Column
     private String phone;
 
+    @Column
+    private Long priority;
+
     @Column(nullable = false)
     private String imgName;
 
