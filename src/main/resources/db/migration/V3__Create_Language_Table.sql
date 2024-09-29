@@ -3,4 +3,9 @@ create table language (
       code varchar(255),
       language varchar(255) not null,
       primary key (id)
-)
+);
+
+insert into language(code, language) values ('pl', 'polski');
+insert into language(code, language) values ('en', 'english');
+insert into language(code, language) values ('ru', 'ruski');
+
