@@ -15,6 +15,7 @@ create table specialization (
         language_id bigint,
         spec_page bigint,
         primary key (id),
-        constraint fk_spec_page foreign key (spec_page) references specialization_page
+        constraint fk_spec_page foreign key (spec_page) references specialization_page,
+    constraint fk_language foreign key (language_id) references language
 );
 
