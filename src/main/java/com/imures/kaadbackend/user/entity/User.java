@@ -38,7 +38,8 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private Boolean isEnabled;
 
-    @Column
+    @Lob
+    @Column(nullable = false)
     @EqualsAndHashCode.Exclude
     private byte[] blogImage;
 

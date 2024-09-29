@@ -9,7 +9,7 @@ spring:
   jpa:
     open-in-view: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: update #change to validate
     show-sql: true
     properties:
       hibernate:
@@ -30,4 +30,4 @@ application:
       expiration-time: 300000
       refresh-expiration-time: 120000000
     cors:
-      allowed-origin: https://service-center-rro.com.ua
+      allowed-origin: "*"
