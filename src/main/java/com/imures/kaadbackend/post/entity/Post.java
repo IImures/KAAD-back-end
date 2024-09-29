@@ -22,7 +22,7 @@ public class Post {
     @Column(nullable = false)
     private OffsetDateTime createdAt;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
 }
