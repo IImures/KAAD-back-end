@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,7 +55,9 @@ public class TeamMemberService {
     @Transactional(readOnly = true)
     public List<TeamMemberResponse> getMembers() {
         return teamMemberRepository.findAll()
-                .stream().map(teamMemberMapper::fromEntityToResponse)
+                .stream()
+                .sorted(Comparator.comparing(TeamMember::getPriority))
+                .map(teamMemberMapper::fromEntityToResponse)
                 .toList();
     }
 
@@ -67,6 +70,7 @@ public class TeamMemberService {
         Optional.ofNullable(teamMemberRequest.getLastName()).ifPresent(teamMember::setLastName);
         Optional.ofNullable(teamMemberRequest.getEmail()).ifPresent(teamMember::setEmail);
         Optional.ofNullable(teamMemberRequest.getPhone()).ifPresent(teamMember::setPhone);
+        Optional.ofNullable(teamMemberRequest.getPriority()).ifPresent(teamMember::setPriority);
 
         if(image != null){
             teamMember.setImgType(image.getContentType());

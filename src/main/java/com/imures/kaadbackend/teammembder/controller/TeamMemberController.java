@@ -42,7 +42,7 @@ public class TeamMemberController {
     }
 
     @PutMapping(path = "{memberId}")
-    public ResponseEntity<TeamMemberResponse> createTeamMember(
+    public ResponseEntity<TeamMemberResponse> updateTeamMember(
             @RequestPart("member") TeamMemberRequest teamMemberRequest,
             @RequestPart("image") @Nullable MultipartFile image,
             @PathVariable Long memberId
