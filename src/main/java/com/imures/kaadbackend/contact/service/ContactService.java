@@ -47,7 +47,7 @@ public class ContactService {
                 .fromEntityToResponse(
                         contactRepository.findById(id)
                                 .orElseThrow(
-                                        ()-> new EntityNotFoundException(String.format("Contact with id %s not found", id))
+                                        ()-> new EntityNotFoundException(String.format("Contact with id: %s not found", id))
                                 )
                 );
     }
@@ -88,10 +88,14 @@ public class ContactService {
             return;
         }
 
+        ContactType contactType = contactTypeRepository.findById(contactRequest.getContactTypeId())
+                .orElseThrow(()-> new EntityNotFoundException(String.format("Contact type with id: %s not found", key)));
+
         Contact contact = contactMapper.fromRequestToEntity(contactRequest);
         contact.setCreatedAt(OffsetDateTime.now());
         contact.setResolved(false);
         contact.setUUID(key);
+        contact.setContactType(contactType);
 
         contactRepository.save(contact);
     }

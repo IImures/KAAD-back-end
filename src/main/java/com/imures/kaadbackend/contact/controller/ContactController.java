@@ -83,6 +83,8 @@ public class ContactController {
         return ResponseEntity.ok(contactService.updateContact(contactRequest, contactId));
     }
 
+    //TODO DO resolved feature
+
     @DeleteMapping(path = "{contactId}")
     public ResponseEntity<Void> deleteContact(
             @PathVariable Long contactId
