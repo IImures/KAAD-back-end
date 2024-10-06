@@ -39,7 +39,7 @@ Role-Based Authentication: Access based on user roles (Admin, Lawyer, Writer).
         cd src/main/resources/application.yml
       ```
   3. **Run the Backend**:
-    - Use your preferred method to build and run the application.
+      Use your preferred method to build and run the application.
    
 ## Endpoints
 Postman collection of endpoints: [KAAD.postman_collection.json](https://github.com/user-attachments/files/17269898/KAAD.postman_collection.json)
