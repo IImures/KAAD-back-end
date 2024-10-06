@@ -16,6 +16,14 @@ public class Language {
     @Column(nullable = false)
     private String language;
 
-    @Column
+    @Column(nullable = false)
     private String code;
+
+    @Column(nullable = false)
+    private Boolean defaultLanguage;
+
+    @Lob
+    @Column(nullable = false)
+    private byte[] imageData;
+
 }
