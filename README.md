@@ -1,4 +1,4 @@
-[KAAD.postman_collection.json](https://github.com/user-attachments/files/17269896/KAAD.postman_collection.json)# KancelariaAdwokacka
+# KancelariaAdwokacka
 
 This is a backend part of a project created for a Law Firm, made in order to help the firm advertise their services, publish posts, and easily manage client requests.
 
@@ -9,6 +9,7 @@ This is a backend part of a project created for a Law Firm, made in order to hel
   - [Backend](#backend)
   - [Frontend](#frontend)
 - [Installation](#installation)
+- [Endpoints](#endpoints)
 
 ## Features
 
@@ -40,5 +41,5 @@ Role-Based Authentication: Access based on user roles (Admin, Lawyer, Writer).
   3. **Run the Backend**:
     - Use your preferred method to build and run the application.
    
-## Endpoint
+## Endpoints
 Postman collection of endpoints: [KAAD.postman_collection.json](https://github.com/user-attachments/files/17269898/KAAD.postman_collection.json)
