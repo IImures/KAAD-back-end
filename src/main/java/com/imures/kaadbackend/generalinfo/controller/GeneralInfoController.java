@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/gen-inf")
 @RequiredArgsConstructor
+@CrossOrigin("http://localhost:4200/")
 public class GeneralInfoController {
 
     private final GeneralInfoService generalInfoService;
@@ -22,11 +23,23 @@ public class GeneralInfoController {
         return new ResponseEntity<>(generalInfoService.getAll(), HttpStatus.OK);
     }
 
-    @GetMapping("{genId}")
-    public ResponseEntity<GeneralInfoResponse> getById(
-            @PathVariable Long genId
+//    @GetMapping("{genId}")
+//    public ResponseEntity<GeneralInfoResponse> getById(
+//            @PathVariable Long genId
+//    ){
+//        return new ResponseEntity<>(generalInfoService.getById(genId), HttpStatus.OK);
+//    }
+    @GetMapping("{generalCode}")
+    public ResponseEntity<GeneralInfoResponse> getByCodeAndLanguage(
+            @PathVariable String generalCode,
+            @RequestParam(
+                    value = "lang",
+                    required = false,
+                    defaultValue = "pl"
+            ) String languageCode
+
     ){
-        return new ResponseEntity<>(generalInfoService.getById(genId), HttpStatus.OK);
+        return new ResponseEntity<>(generalInfoService.getByCodeAndLanguage(generalCode, languageCode), HttpStatus.OK);
     }
 
     @PostMapping

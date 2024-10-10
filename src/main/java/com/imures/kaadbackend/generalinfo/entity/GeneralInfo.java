@@ -17,7 +17,7 @@ public class GeneralInfo {
     @Column
     private String code;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Language language;
 
     @Column(nullable = false, columnDefinition = "TEXT")
