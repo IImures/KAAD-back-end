@@ -5,6 +5,7 @@ import com.imures.kaadbackend.teammembder.controller.response.TeamMemberResponse
 import com.imures.kaadbackend.teammembder.service.TeamMemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,13 @@ public class TeamMemberController {
         return new ResponseEntity<>(teamMemberService.getMember(memberId), HttpStatus.OK);
     }
 
+    @GetMapping(path = "{memberId}/photo", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<byte[]> getTeamMemberPhoto(
+            @PathVariable Long memberId
+    ){
+        return new ResponseEntity<>(teamMemberService.getMemberPhoto(memberId), HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<List<TeamMemberResponse>> getAllTeamMembers() {
         return new ResponseEntity<>(teamMemberService.getMembers(), HttpStatus.OK);
@@ -34,7 +42,7 @@ public class TeamMemberController {
 
     @PostMapping
     public ResponseEntity<TeamMemberResponse> createTeamMember(
-           @RequestPart("member") TeamMemberRequest teamMemberRequest,
+           @RequestPart("body") TeamMemberRequest teamMemberRequest,
            @RequestPart("image") MultipartFile image
 
     ) throws IOException {
@@ -43,7 +51,7 @@ public class TeamMemberController {
 
     @PutMapping(path = "{memberId}")
     public ResponseEntity<TeamMemberResponse> updateTeamMember(
-            @RequestPart("member") TeamMemberRequest teamMemberRequest,
+            @RequestPart("body") TeamMemberRequest teamMemberRequest,
             @RequestPart("image") @Nullable MultipartFile image,
             @PathVariable Long memberId
 

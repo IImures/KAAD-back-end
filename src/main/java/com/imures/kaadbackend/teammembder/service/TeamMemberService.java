@@ -87,4 +87,11 @@ public class TeamMemberService {
                 .orElseThrow(() -> new EntityNotFoundException(String.format("TeamMember with id %s not found", memberId)));
         teamMemberRepository.delete(teamMember);
     }
+
+    public byte[] getMemberPhoto(Long memberId) {
+        return teamMemberRepository
+                .findById(memberId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("TeamMember with id %s not found", memberId)))
+                .getImageData();
+    }
 }

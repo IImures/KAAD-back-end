@@ -11,5 +11,4 @@ public class TeamMemberResponse {
     private String lastName;
     private String email;
     private String phone;
-    private String imageData;
 }
