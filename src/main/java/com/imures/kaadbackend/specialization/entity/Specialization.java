@@ -1,9 +1,11 @@
 package com.imures.kaadbackend.specialization.entity;
 
-import com.imures.kaadbackend.language.entity.Language;
+import com.imures.kaadbackend.generalinfo.entity.GeneralInfo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity(name = "specialization")
 @Getter
@@ -14,25 +16,24 @@ public class Specialization {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
-
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "spec_page", referencedColumnName = "id")
     private SpecializationPage specializationPage;
 
-    @ManyToOne(cascade = CascadeType.DETACH)
-    private Language language;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<GeneralInfo> details;
 
     @Column(nullable = false)
     private String imgName;
 
-    @Column(nullable = false)
-    private String imgType;
-
     @Lob
     @Column(nullable = false)
+    @Basic(fetch = FetchType.LAZY)
     private byte[] imageData;
+
+    public void addGeneralInfo(GeneralInfo generalInfo) {
+        details.add(generalInfo);
+    }
 
 }
 

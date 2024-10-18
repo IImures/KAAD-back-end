@@ -30,4 +30,4 @@ application:
       expiration-time: 300000
       refresh-expiration-time: 120000000
     cors:
-      allowed-origin: "*"
+      allowed-origin: localhost:4200

@@ -1,8 +1,11 @@
 package com.imures.kaadbackend.teammembder.entity;
 
+import com.imures.kaadbackend.generalinfo.entity.GeneralInfo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity(name = "team_member")
 @Getter
@@ -25,18 +28,21 @@ public class TeamMember {
     @Column
     private String phone;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<GeneralInfo> descriptions;
+
     @Column
     private Long priority;
 
     @Column(nullable = false)
     private String imgName;
 
-    @Column(nullable = false)
-    private String imgType;
-
     @Lob
     @Column(nullable = false)
     private byte[] imageData;
 
+    public void addGeneralInfo(GeneralInfo generalInfo) {
+        descriptions.add(generalInfo);
+    }
 
 }

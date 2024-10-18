@@ -14,7 +14,7 @@ public class GeneralInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String code;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -22,4 +22,6 @@ public class GeneralInfo {
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
+
+
 }

@@ -6,8 +6,3 @@ create table language (
       default_language boolean not null,
       primary key (id)
 );
-
--- insert into language(code, language) values ('pl', 'polski');
--- insert into language(code, language) values ('en', 'english');
--- insert into language(code, language) values ('ru', 'ruski');
-

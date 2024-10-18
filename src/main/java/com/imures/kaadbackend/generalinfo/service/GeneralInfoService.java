@@ -40,7 +40,7 @@ public class GeneralInfoService {
         );
     }
 
-    @Transactional(readOnly = true)
+    @Transactional //Used in TeamMemberService updateTeamMember!
     public GeneralInfoResponse getByCodeAndLanguage(String code, String languageCode) {
         return generalInfoMapper.fromEntityToResponse(
                 generalInfoRepository.findByCodeAndLanguage_Code(
@@ -50,7 +50,7 @@ public class GeneralInfoService {
     }
 
     @Transactional
-    public GeneralInfoResponse create(GeneralInfoRequest generalInfoRequest) {
+    public GeneralInfo create(GeneralInfoRequest generalInfoRequest) {
         Language language = languageRepository
                 .findById(generalInfoRequest.getLanguageId())
                 .orElseThrow(()-> new EntityNotFoundException(String.format("Language with id: %s not found", generalInfoRequest.getLanguageId())));
@@ -66,7 +66,7 @@ public class GeneralInfoService {
         info.setCode(generalInfoRequest.getCode());
         info.setLanguage(language);
 
-        return generalInfoMapper.fromEntityToResponse(generalInfoRepository.save(info));
+        return generalInfoRepository.save(info);
     }
 
     @Transactional

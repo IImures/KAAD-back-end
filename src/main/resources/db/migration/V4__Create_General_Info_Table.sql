@@ -5,4 +5,4 @@ create table general_info (
       language_id bigint,
       primary key (id),
     constraint fk_language foreign key (language_id) references language
-)
+);

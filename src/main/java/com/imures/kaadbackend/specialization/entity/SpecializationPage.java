@@ -13,7 +13,7 @@ public class SpecializationPage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = true, columnDefinition = "TEXT")
     private String content;
 
     @OneToOne(mappedBy = "specializationPage")

@@ -4,9 +4,15 @@ create table team_member (
      first_name varchar(255) not null,
      image_data oid not null,
      img_name varchar(255) not null,
-     img_type varchar(255) not null,
      last_name varchar(255) not null,
      phone varchar(255),
      priority bigint,
      primary key (id)
-)
+);
+
+create table team_member_descriptions (
+     team_member_id bigint not null,
+     descriptions_id bigint not null,
+    constraint fk_team_member foreign key (team_member_id) references team_member,
+    constraint fk_general_info foreign key (descriptions_id) references  general_info
+);

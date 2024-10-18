@@ -24,6 +24,7 @@ public class Language {
 
     @Lob
     @Column(nullable = false)
+    @Basic(fetch = FetchType.LAZY)
     private byte[] imageData;
 
 }

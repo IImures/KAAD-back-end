@@ -17,15 +17,21 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/team-member")
 @RequiredArgsConstructor
+@CrossOrigin("http://localhost:4200/")
 public class TeamMemberController {
 
     private final TeamMemberService teamMemberService;
 
     @GetMapping(path = "{memberId}")
     public ResponseEntity<TeamMemberResponse> getTeamMember(
-            @PathVariable("memberId") Long memberId
+            @PathVariable("memberId") Long memberId,
+            @RequestParam(
+                    value = "lang",
+                    required = false,
+                    defaultValue = "pl"
+            ) String languageCode
     ) {
-        return new ResponseEntity<>(teamMemberService.getMember(memberId), HttpStatus.OK);
+        return new ResponseEntity<>(teamMemberService.getMember(memberId,languageCode), HttpStatus.OK);
     }
 
     @GetMapping(path = "{memberId}/photo", produces = MediaType.IMAGE_JPEG_VALUE)
@@ -36,8 +42,14 @@ public class TeamMemberController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TeamMemberResponse>> getAllTeamMembers() {
-        return new ResponseEntity<>(teamMemberService.getMembers(), HttpStatus.OK);
+    public ResponseEntity<List<TeamMemberResponse>> getAllTeamMembers(
+            @RequestParam(
+                    value = "lang",
+                    required = false,
+                    defaultValue = "pl"
+            ) String languageCode
+    ) {
+        return new ResponseEntity<>(teamMemberService.getMembers(languageCode), HttpStatus.OK);
     }
 
     @PostMapping

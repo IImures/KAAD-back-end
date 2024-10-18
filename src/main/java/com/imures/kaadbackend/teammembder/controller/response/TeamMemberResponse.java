@@ -1,5 +1,6 @@
 package com.imures.kaadbackend.teammembder.controller.response;
 
+import com.imures.kaadbackend.generalinfo.controller.response.GeneralInfoResponse;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,4 +12,5 @@ public class TeamMemberResponse {
     private String lastName;
     private String email;
     private String phone;
+    private GeneralInfoResponse description;
 }

@@ -2,6 +2,7 @@ package com.imures.kaadbackend.generalinfo.controller;
 
 import com.imures.kaadbackend.generalinfo.controller.request.GeneralInfoRequest;
 import com.imures.kaadbackend.generalinfo.controller.response.GeneralInfoResponse;
+import com.imures.kaadbackend.generalinfo.mapper.GeneralInfoMapperImpl;
 import com.imures.kaadbackend.generalinfo.service.GeneralInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import java.util.List;
 public class GeneralInfoController {
 
     private final GeneralInfoService generalInfoService;
+    private final GeneralInfoMapperImpl generalInfoMapper;
 
     @GetMapping
     public ResponseEntity<List<GeneralInfoResponse>> getAll(){
@@ -46,7 +48,12 @@ public class GeneralInfoController {
     public ResponseEntity<GeneralInfoResponse> createGeneralInfo(
             @RequestBody GeneralInfoRequest generalInfoRequest
     ){
-        return new ResponseEntity<>(generalInfoService.create(generalInfoRequest), HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                generalInfoMapper.fromEntityToResponse(
+                    generalInfoService.create(generalInfoRequest)
+                ),
+                HttpStatus.CREATED
+        );
     }
 
     @PutMapping("{genId}")

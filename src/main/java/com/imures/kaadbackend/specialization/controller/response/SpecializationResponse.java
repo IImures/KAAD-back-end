@@ -1,5 +1,6 @@
 package com.imures.kaadbackend.specialization.controller.response;
 
+import com.imures.kaadbackend.generalinfo.controller.response.GeneralInfoResponse;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,6 +8,5 @@ import lombok.Setter;
 @Setter
 public class SpecializationResponse {
     private Long id;
-    private String name;
-    private String imageData;
+    private GeneralInfoResponse generalInfo;
 }
