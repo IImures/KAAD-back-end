@@ -8,6 +8,6 @@ import java.util.List;
 
 @Getter
 @Setter
-public class SpecializationRequest {
-    private List<GeneralInfoRequest> specializationNames;
+public class SpecializationPageRequest {
+    private List<GeneralInfoRequest> pageContents;
 }

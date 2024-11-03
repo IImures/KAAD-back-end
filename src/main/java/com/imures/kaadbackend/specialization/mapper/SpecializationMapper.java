@@ -5,7 +5,6 @@ import com.imures.kaadbackend.specialization.controller.response.SpecializationR
 import com.imures.kaadbackend.specialization.entity.Specialization;
 import org.mapstruct.Mapper;
 
-import java.util.Base64;
 
 @Mapper(componentModel = "spring")
 public interface SpecializationMapper {
@@ -14,8 +13,5 @@ public interface SpecializationMapper {
 
     SpecializationResponse fromEntityToResponse(Specialization specialization);
 
-    default String map(byte[] imageData) {
-        return imageData != null ? "data:image/png;base64," + Base64.getEncoder().encodeToString(imageData) : null;
-    }
 }
 

@@ -2,6 +2,7 @@ package com.imures.kaadbackend.contact.controller;
 
 import com.imures.kaadbackend.contact.controller.request.ContactRequest;
 import com.imures.kaadbackend.contact.controller.response.ContactResponse;
+import com.imures.kaadbackend.contact.controller.response.ContactTypeResponse;
 import com.imures.kaadbackend.contact.service.ContactService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -68,11 +71,10 @@ public class ContactController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createContact(
+    public ResponseEntity<ContactResponse> createContact(
             @RequestBody ContactRequest contactRequest
     ) throws BadRequestException {
-        contactService.createContact(contactRequest);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(contactService.createContact(contactRequest), HttpStatus.CREATED);
     }
 
     @PutMapping(path = "{contactId}")
@@ -91,6 +93,11 @@ public class ContactController {
     ){
         contactService.deleteContact(contactId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(path = "type")
+    public ResponseEntity<List<ContactTypeResponse>> getContactTypes(){
+        return new ResponseEntity<>(contactService.getContactTypes(), HttpStatus.OK);
     }
 
 

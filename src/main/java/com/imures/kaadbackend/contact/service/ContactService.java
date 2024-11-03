@@ -2,6 +2,7 @@ package com.imures.kaadbackend.contact.service;
 
 import com.imures.kaadbackend.contact.controller.request.ContactRequest;
 import com.imures.kaadbackend.contact.controller.response.ContactResponse;
+import com.imures.kaadbackend.contact.controller.response.ContactTypeResponse;
 import com.imures.kaadbackend.contact.entity.Contact;
 import com.imures.kaadbackend.contact.entity.ContactType;
 import com.imures.kaadbackend.contact.mapper.ContactMapper;
@@ -20,10 +21,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.time.OffsetDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -71,7 +69,7 @@ public class ContactService {
     }
 
     @Transactional
-    public void createContact(ContactRequest contactRequest) throws BadRequestException {
+    public ContactResponse createContact(ContactRequest contactRequest) throws BadRequestException {
         if(contactRequest.getEmail() == null && contactRequest.getPhoneNumber() == null){
             throw new BadRequestException("New contact form could not be created if mail or phone is missing");
         }
@@ -84,8 +82,8 @@ public class ContactService {
         );
 
         Optional<Contact> result = contactRepository.findByUUID(key);
-        if(!isPossibleToCreate(result)){
-            return;
+        if(!isPossibleToCreate(result) && result.isPresent()){
+            return contactMapper.fromEntityToResponse(result.get());
         }
 
         ContactType contactType = contactTypeRepository.findById(contactRequest.getContactTypeId())
@@ -97,7 +95,7 @@ public class ContactService {
         contact.setUUID(key);
         contact.setContactType(contactType);
 
-        contactRepository.save(contact);
+        return contactMapper.fromEntityToResponse(contactRepository.save(contact));
     }
 
     private boolean isPossibleToCreate(Optional<Contact> result) {
@@ -159,5 +157,17 @@ public class ContactService {
                 () -> new EntityNotFoundException(String.format("Contact with id %s not found", contactId))
         );
         contactRepository.delete(contact);
+    }
+
+    public List<ContactTypeResponse> getContactTypes() {
+        List<ContactType> contactTypes = contactTypeRepository.findAll();
+        List<ContactTypeResponse> contactTypesResponse = new ArrayList<>();
+        for (ContactType contactType : contactTypes) {
+            ContactTypeResponse contactTypeResponse = new ContactTypeResponse();
+            contactTypeResponse.setId(contactType.getId());
+            contactTypeResponse.setContactType(contactType.getContactType());
+            contactTypesResponse.add(contactTypeResponse);
+        }
+        return contactTypesResponse;
     }
 }

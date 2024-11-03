@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -92,5 +93,30 @@ public class GeneralInfoService {
         GeneralInfo info =  generalInfoRepository.findById(genId)
                 .orElseThrow(()-> new EntityNotFoundException(String.format("General info with id %s not found", genId)));
         generalInfoRepository.delete(info);
+    }
+
+    public List<GeneralInfoResponse> createMany(List<GeneralInfoRequest> generalInfoRequests) {
+        List<GeneralInfoResponse> responses = new ArrayList<>();
+        for(GeneralInfoRequest generalInfoRequest : generalInfoRequests) {
+            Language language = languageRepository
+                    .findById(generalInfoRequest.getLanguageId())
+                    .orElseThrow(()-> new EntityNotFoundException(String.format("Language with id: %s not found", generalInfoRequest.getLanguageId())));
+            Optional<GeneralInfo> generalInfo = generalInfoRepository.findByCodeAndLanguage_Code(
+                    generalInfoRequest.getCode(), language.getCode()
+            );
+            if (generalInfo.isPresent()) {
+                throw new EntityExistsException(String.format("General info with code: %s and language: %s already exists", generalInfoRequest.getCode(), language.getCode()));
+            }
+
+            GeneralInfo info = new GeneralInfo();
+            info.setContent(generalInfoRequest.getContent());
+            info.setCode(generalInfoRequest.getCode());
+            info.setLanguage(language);
+
+            responses.add(
+                    generalInfoMapper.fromEntityToResponse(generalInfoRepository.save(info))
+            );
+        }
+        return responses;
     }
 }

@@ -56,6 +56,17 @@ public class GeneralInfoController {
         );
     }
 
+    @PostMapping(path ="many")
+    public ResponseEntity<List<GeneralInfoResponse>> createManyGeneralInfos(
+            @RequestBody List<GeneralInfoRequest> generalInfoRequest
+    ){
+        return new ResponseEntity<>(
+                generalInfoService.createMany(generalInfoRequest),
+                HttpStatus.CREATED
+        );
+    }
+
+
     @PutMapping("{genId}")
     public ResponseEntity<GeneralInfoResponse> createGeneralInfo(
             @RequestBody GeneralInfoRequest generalInfoRequest,

@@ -20,14 +20,15 @@ public class Specialization {
     @JoinColumn(name = "spec_page", referencedColumnName = "id")
     private SpecializationPage specializationPage;
 
+    // Todo details -> specNames
     @OneToMany(cascade = CascadeType.ALL)
     private List<GeneralInfo> details;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String imgName;
 
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = true)
     @Basic(fetch = FetchType.LAZY)
     private byte[] imageData;
 
