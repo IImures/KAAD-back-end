@@ -1,0 +1,14 @@
+{
+    "specializationNames" : [
+        {
+            "content" : "Windykacja",
+            "code" : "odk",
+            "languageId" : 1
+        },
+        {
+            "content" : "Recovery",
+            "code" : "odk",
+            "languageId" : 2
+        }
+    ]
+}

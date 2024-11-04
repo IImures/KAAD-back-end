@@ -1,0 +1,19 @@
+{
+    "firstName": "Adrian",
+    "lastName": "Dzienkiewicz",
+    "email": "a.dzienkiewicz@prawnikwarszawa.com",
+    "phone": "+48502637409",
+    "priority" : 1,
+    "description" : [
+        {
+            "content" : "Morski Wilk Adwokat",
+            "code" : "member",
+            "languageId" : 1
+        },
+        {
+            "content" : "Sea wolf",
+            "code" : "member",
+            "languageId" : 2
+        }
+    ]
+}

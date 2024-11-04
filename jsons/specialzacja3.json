@@ -1,0 +1,15 @@
+
+{
+    "specializationNames" : [
+        {
+            "content" : "Zamówienie publiczne",
+            "code" : "odk",
+            "languageId" : 1
+        },
+        {
+            "content" : "Public Order",
+            "code" : "odk",
+            "languageId" : 2
+        }
+    ]
+}

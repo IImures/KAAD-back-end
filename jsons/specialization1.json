@@ -1,0 +1,18 @@
+{
+    "specializationNames" : [
+        {
+            "content" : "Odszkodowanie1",
+            "code" : "odk",
+            "languageId" : 1
+        },
+        {
+            "content" : "Returns1",
+            "code" : "odk",
+            "languageId" : 2
+        }
+    ]
+}
+
+
+
+

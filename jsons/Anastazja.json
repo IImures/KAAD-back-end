@@ -1,0 +1,19 @@
+{
+    "firstName": "Anastazja",
+    "lastName": "Hroda",
+    "email": "a.hroda@prawnikwarszawa.com",
+    "phone": "+48574401349",
+    "priority" : 1,
+    "description" : [
+        {
+            "content" : "Prawnik",
+            "code" : "member",
+            "languageId" : 1
+        },
+        {
+            "content" : "Lawyer",
+            "code" : "member",
+            "languageId" : 2
+        }
+    ]
+}
