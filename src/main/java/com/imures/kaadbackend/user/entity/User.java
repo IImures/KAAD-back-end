@@ -39,7 +39,7 @@ public class User implements UserDetails {
     private Boolean isEnabled;
 
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = true)
     @EqualsAndHashCode.Exclude
     private byte[] blogImage;
 
@@ -83,6 +83,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return isEnabled;
     }
 }

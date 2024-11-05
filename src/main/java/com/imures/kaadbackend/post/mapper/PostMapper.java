@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface PostMapper {
 
+    @Mapping(target = "authorId", source = "author.id")
     @Mapping(target = "contentLength", expression = "java(countWords(post.getContent()))")
     PostResponse fromEntityToResponse(Post post);
 

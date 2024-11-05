@@ -10,6 +10,7 @@ import java.time.OffsetDateTime;
 public class PostResponse {
     private Long id;
     private String author;
+    private Long authorId;
     private String content;
     private OffsetDateTime createdAt;
     private Integer contentLength;

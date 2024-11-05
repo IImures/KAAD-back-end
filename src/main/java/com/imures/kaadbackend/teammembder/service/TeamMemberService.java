@@ -82,7 +82,7 @@ public class TeamMemberService {
     }
 
     @Transactional(readOnly = true)
-    protected GeneralInfo getMemberGeneralInfo(TeamMember teamMember, String languageCode) {
+    public GeneralInfo getMemberGeneralInfo(TeamMember teamMember, String languageCode) {
         return teamMember.getDescriptions().stream()
                 .filter(generalInfo -> generalInfo.getLanguage().getCode().equals(languageCode))
                 .findFirst()
@@ -104,7 +104,7 @@ public class TeamMemberService {
             );
             memberResponses.add(teamMemberResponse);
         }
-        memberResponses.sort(Comparator.comparingLong(TeamMemberResponse::getId));
+        memberResponses.sort(Comparator.comparingLong(TeamMemberResponse::getId).reversed());
         return memberResponses;
     }
 

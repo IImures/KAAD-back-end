@@ -19,14 +19,17 @@ spring:
     baseline-on-migrate: true
     validate-on-migrate: true
     locations: classpath:db/migration
+    url: jdbc:postgresql://localhost:5432/kaad
+    user: postgres
+    password: postgres
 
 
 
 application:
   security:
     jwt:
-      secret-key: <secretKey>
-      refresh-secret-key: <secretKey>
+      secret-key: 932d996565c8733fb97bc6cdf77398c3a85cca61a2e2664502291458cb3983a48277fd40eec8d4d44626c29d5fcb7c27df55cfd12885ad578f23d6c24a8749a0f26f4b05c35d25fd34afec12a19cbb32d13ee1bb3b9430dfb2ae7b4f9676026c3e5ebf8ef45c078beb559c60fd4fb9f3f65bd662f9349a17b8df07b50e72d364075998587c97d67f12d08c5350d91e1476cfee45cf8d12d71560c3bfab9261a559f80e0fcdffd4c04ed66d33e6e7063cd25d8ec389e59ced07efb45050c69525e117aa3f878d08fb9e3f425b7805b0b54a5cac6809b3d014ed0d6eaa77f3d788d443f8cc72b0d3e63603569538ab3136f08bb7e46f5c7e7922e624535d4d8cf9
+      refresh-secret-key: f29f7fc97041354d8877671b3c13ea6feaf3dc46c9c4fd534c860ece2a1555bd71e6ffda3ad70f3f9354059b861543bedf0b2a0c7efd28e4d0ef23b8f82f557c5d73b6a175d07fe7440e06a19f4c0785f7d0bdb059d81a93b761ce15c250cb64ca387fffa10ad684984fd7e82d76b709e8ba2e7bbc8c10aea9503bc2eb34c121e25d4b437c73182a62f67b80cafa12738cd24d834830ab5010f8cb1188aa93cfd4472f245289513ad807f9ee50fd221ac20f6b287757a8f326be075ca9d2940ddd0025add1ca910fbb6017057062c04a10f4886cc2c348686404b5bd8f2f12642cd339df3329c9c8306958859f4ddd5e404b53ee5f9cabbd1d323e26b2c19eb0
       expiration-time: 300000
       refresh-expiration-time: 120000000
     cors:
