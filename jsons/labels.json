@@ -1,185 +1,223 @@
-{
+
+[{
     "content" : "O nas",
     "code" : "aboutLabel",
     "languageId" : 1
-}
+},
 
 {
     "content" : "About Us",
     "code" : "aboutLabel",
     "languageId" : 2
-}
+},
 
 {
     "content" : "Nasz Zespół",
     "code" : "team",
     "languageId" : 1 
-}
+},
 
 {
     "content" : "Our Team",
     "code" : "team",
     "languageId" : 2
-}
+},
 
 {
     "content" : "Po polsku tu napisać",
     "code" : "aboutUs",
     "languageId" : 1
-}
+},
 
 {
     "content" : "Write here in english",
     "code" : "aboutUs",
     "languageId" : 2
-}
+},
 
 {
     "content" : "Specjalizaje",
     "code" : "specLabel",
     "languageId" : 1
-}
+},
 
 {
     "content" : "Specializations",
     "code" : "specLabel",
     "languageId" : 2
-}
+},
 
 {
     "content" : "Aktualności",
     "code" : "blogLabel",
     "languageId" : 1
-}
+},
 
 {
     "content" : "Blog",
     "code" : "blogLabel",
     "languageId" : 2
-}
+},
 
 {
     "content" : "Kontakt",
     "code" : "contactLabel",
     "languageId" : 1
-}
+},
 
 {
     "content" : "Contact",
     "code" : "contactLabel",
     "languageId" : 2
-}
+},
 
 {
     "content" : "Główne specjalizacje",
     "code" : "specTitle",
     "languageId" : 1
-}
+},
 
 {
     "content" : "Main Specializations",
     "code" : "specTitle",
     "languageId" : 2
-}
+},
 
 {
     "content" : "<h5>Do you need further support?</h5><span>Check if we can help you. Call or write to us.</span>",
     "code" : "contactBanner",
     "languageId" : 2
-}
+},
 
 {
     "content" : "Rejestracja na konsultację",
     "code" : "contactTitle",
     "languageId" : 1
-}
+},
 
 {
     "content" : "Registration for consultation",
     "code" : "contactTitle",
     "languageId" : 2
-}
+},
 
 {
     "content" : "Zapraszamy do kontaktu z naszą Kancelarią Adwokacką. Jesteśmy profesjonalnym zespołem prawników, którzy oferują kompleksową obsługę prawną. Prowadzimy także konsultacje online!",
     "code" : "contactDescription",
     "languageId" : 1
-}
+},
 
 {
     "content" : "Feel free to contact our Law Firm. We are a professional team of lawyers offering comprehensive legal services. We also conduct online consultations!",
     "code" : "contactDescription",
     "languageId" : 2
-}
+},
 
 {
     "content" : "imię i nazwisko",
     "code": "fullNameLabel",
     "languageId" : 1
-}
+},
 
 {
     "content" : "first and last name",
     "code": "fullNameLabel",
     "languageId" : 1
-}
+},
 
 {
     "content" : "email",
     "code": "emailLabel",
     "languageId" : 1
-}
+},
 
 {
     "content" : "email",
     "code": "emailLabel",
     "languageId" : 2
-}
+},
 
 {
     "content" : "nr telefonu",
     "code": "phoneNumberLabel",
     "languageId" : 1
-}
+},
 
 {
     "content" : "phone number",
     "code": "phoneNumberLabel",
     "languageId" : 2
-}
+},
 
 {
     "content" : "Rodzaj usługi",
     "code": "serviceTypeLabel",
     "languageId" : 1
-}
+},
 
 {
     "content" : "Service Type",
     "code": "serviceTypeLabel",
     "languageId" : 2
-}
+},
 
 {
     "content" : "Metoda komunikacji",
-    "code": "comunicationMethodLabel",
+    "code": "communicationMethodLabel",
     "languageId" : 1
-}
+},
 
 {
     "content" : "Comunication method",
-    "code": "comunicationMethodLabel",
+    "code": "communicationMethodLabel",
     "languageId" : 2
-}
+},
 
 {
     "content" : "Wyślij formularz",
     "code": "sendFormLabel",
     "languageId" : 1
-}
+},
 
 {
     "content" : "Send Form",
     "code": "sendFormLabel",
     "languageId" : 2
+},
+
+{
+    "content" : "W formularze wystąpił błąd",
+    "code": "errorFormLabel",
+    "languageId" : 1
+},
+
+{
+    "content" : "In the form, an error occurred.",
+    "code": "errorFormLabel",
+    "languageId" : 2
+},
+
+{
+    "content" : "Formularz został wysłany.",
+    "code": "successFormLabel",
+    "languageId" : 1
+},
+
+{
+    "content" : "Form was sent.",
+    "code": "successFormLabel",
+    "languageId" : 2
+},
+
+{
+    "content" : "Wystąpił bład po stronie serwera.",
+    "code": "serverErrorFormLabel",
+    "languageId" : 1
+},
+
+{
+    "content" : "A server-side error occurred.",
+    "code": "serverErrorFormLabel",
+    "languageId" : 2
 }
+]

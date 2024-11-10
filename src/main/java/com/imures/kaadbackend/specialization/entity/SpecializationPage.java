@@ -14,20 +14,21 @@ import java.util.List;
 public class SpecializationPage {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @MapsId
+    @OneToOne
+    @JoinColumn(name = "id")
+    private Specialization specialization;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<GeneralInfo> content = new ArrayList<>();
 
-    @Column(nullable = true)
+    @Column
     private String imageName;
 
-    @Column(nullable = true)
+    @Column
     private byte[] imageData;
-
-    @OneToOne(mappedBy = "specializationPage")
-    private Specialization specialization;
 
     public void addGeneralInfo(GeneralInfo generalInfo) {
         content.add(generalInfo);

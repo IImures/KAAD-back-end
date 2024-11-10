@@ -1,5 +1,7 @@
 package com.imures.kaadbackend.contact.service;
 
+import com.imures.kaadbackend.configuration.MailService;
+import com.imures.kaadbackend.configuration.PhoneNumberConverter;
 import com.imures.kaadbackend.contact.controller.request.ContactRequest;
 import com.imures.kaadbackend.contact.controller.response.ContactResponse;
 import com.imures.kaadbackend.contact.controller.response.ContactTypeResponse;
@@ -8,9 +10,14 @@ import com.imures.kaadbackend.contact.entity.ContactType;
 import com.imures.kaadbackend.contact.mapper.ContactMapper;
 import com.imures.kaadbackend.contact.repository.ContactRepository;
 import com.imures.kaadbackend.contact.repository.ContactTypeRepository;
+import com.imures.kaadbackend.language.entity.Language;
+import com.imures.kaadbackend.language.repository.LanguageRepository;
+import com.imures.kaadbackend.specialization.entity.Specialization;
+import com.imures.kaadbackend.specialization.repository.SpecializationRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,15 +28,24 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class ContactService {
 
+    @Value("${application.contact.creationTimeout}")
+    private Integer contactCreationTimeout;
+
     private final ContactRepository contactRepository;
     private final ContactMapper contactMapper;
     private final ContactTypeRepository contactTypeRepository;
+    private final SpecializationRepository specializationRepository;
+    private final LanguageRepository languageRepository;
+    private final MailService mailService;
+
+
 
     @Transactional(readOnly = true)
     public List<ContactResponse> getAllContacts() {
@@ -73,15 +89,15 @@ public class ContactService {
         if(contactRequest.getEmail() == null && contactRequest.getPhoneNumber() == null){
             throw new BadRequestException("New contact form could not be created if mail or phone is missing");
         }
-
+        OffsetDateTime createdAt = OffsetDateTime.now();
         String key = generateKey(
                 contactRequest.getFullName(),
                 Optional.ofNullable(contactRequest.getPhoneNumber()).orElse(""),
                 Optional.ofNullable(contactRequest.getEmail()).orElse(""),
-                contactRequest.getReason()
+                createdAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         );
 
-        Optional<Contact> result = contactRepository.findByUUID(key);
+        Optional<Contact> result = contactRepository.findLatestByUUID(key);
         if(!isPossibleToCreate(result) && result.isPresent()){
             return contactMapper.fromEntityToResponse(result.get());
         }
@@ -89,13 +105,29 @@ public class ContactService {
         ContactType contactType = contactTypeRepository.findById(contactRequest.getContactTypeId())
                 .orElseThrow(()-> new EntityNotFoundException(String.format("Contact type with id: %s not found", key)));
 
+        Specialization specialization = specializationRepository.findById(contactRequest.getSpecializationId())
+                .orElseThrow(()-> new EntityNotFoundException(String.format("Specialization with id: %s not found", key)));
+
+        Language language = languageRepository.findByCode(contactRequest.getLanguageCode())
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Language with code: %s, not found", contactRequest.getLanguageCode())));
+
         Contact contact = contactMapper.fromRequestToEntity(contactRequest);
-        contact.setCreatedAt(OffsetDateTime.now());
+        contact.setPhoneNumber(
+                Optional.ofNullable(contactRequest.getPhoneNumber())
+                        .map(PhoneNumberConverter::convertToCompactFormat)
+                        .orElse(null)
+        );
+        contact.setCreatedAt(createdAt);
         contact.setResolved(false);
         contact.setUUID(key);
         contact.setContactType(contactType);
+        contact.setSpecialization(specialization);
+        contact.setLanguage(language);
+        ContactResponse response = contactMapper.fromEntityToResponse(contactRepository.save(contact));
 
-        return contactMapper.fromEntityToResponse(contactRepository.save(contact));
+        mailService.sendContactEmail(response);
+
+        return response;
     }
 
     private boolean isPossibleToCreate(Optional<Contact> result) {
@@ -104,11 +136,11 @@ public class ContactService {
         }
         Duration duration = Duration.between(result.get().getCreatedAt(), OffsetDateTime.now());
 
-        return Math.abs(duration.toMinutes()) > 15;
+        return Math.abs(duration.toMinutes()) > contactCreationTimeout;
     }
 
-    public static String generateKey(String fullName, String phoneNumber, String email, String reason) {
-        String data = fullName + phoneNumber + email + reason;
+    public static String generateKey(String fullName, String phoneNumber, String email, String date) {
+        String data = fullName + phoneNumber + email + date;
 
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -137,7 +169,7 @@ public class ContactService {
         Optional.ofNullable(contactRequest.getFullName()).ifPresent(contact::setFullName);
         Optional.ofNullable(contactRequest.getPhoneNumber()).ifPresent(contact::setPhoneNumber);
         Optional.ofNullable(contactRequest.getEmail()).ifPresent(contact::setEmail);
-        Optional.ofNullable(contactRequest.getReason()).ifPresent(contact::setReason);
+//        Optional.ofNullable(contactRequest.getReason()).ifPresent(contact::setReason);
         Optional.ofNullable(contactRequest.getContactTypeId()).ifPresent(
                 aLong -> {
                     ContactType ct = contactTypeRepository.findById(aLong)

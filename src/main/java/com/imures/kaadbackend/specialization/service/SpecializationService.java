@@ -20,6 +20,7 @@ import com.imures.kaadbackend.specialization.repository.SpecializationRepository
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,9 +43,9 @@ public class SpecializationService {
     private final LanguageRepository languageRepository;
 
     @Transactional(readOnly = true)
-    public List<SpecializationResponse> getAllSpecializations(String languageCode) {
+    public List<SpecializationResponse> getAllSpecializations(String languageCode, Boolean showHidden) {
 
-        List<Specialization> specializations = specializationRepository.findAll();
+        List<Specialization> specializations = specializationRepository.findSpecializations(showHidden);
         List<SpecializationResponse> specializationResponses = new ArrayList<>();
 
         for (Specialization specialization : specializations) {
@@ -52,13 +53,8 @@ public class SpecializationService {
             specializationResponse.setId(specialization.getId());
             specializationResponse.setGeneralInfo(
                     generalInfoMapper.fromEntityToResponse(
-                            specialization.getDetails().stream()
-                            .filter(generalInfo -> generalInfo.getLanguage().getCode().equals(languageCode))
-                            .findFirst()
-                            .orElseGet(() -> specialization.getDetails().stream()
-                                    .filter( generalInfo -> generalInfo.getLanguage().getDefaultLanguage())
-                                    .findFirst().orElseGet(()-> specialization.getDetails().get(0))
-                            ))
+                            getSpecializationGeneralInfo(specialization, languageCode)
+                    )
             );
 
             specializationResponses.add(specializationResponse);
@@ -68,9 +64,13 @@ public class SpecializationService {
     }
 
     @Transactional(readOnly = true)
-    public SpecializationResponse getSpecialization(Long specId, String languageCode) {
+    public SpecializationResponse getSpecialization(Long specId, String languageCode, Boolean showHidden) {
         Specialization specialization =specializationRepository.findById(specId)
                         .orElseThrow(() -> new EntityNotFoundException(String.format("Specialization with id %s not found", specId)));
+
+        if(specialization.isHidden() && !showHidden){
+            throw new EntityNotFoundException(String.format("Specialization with id %s not found", specId));
+        }
 
         SpecializationResponse specializationResponse = specializationMapper.fromEntityToResponse(specialization);
         GeneralInfo generalInfo = getSpecializationGeneralInfo(specialization, languageCode);
@@ -83,25 +83,33 @@ public class SpecializationService {
 
     @Transactional(readOnly = true)
     protected GeneralInfo getSpecializationGeneralInfo(Specialization specialization, String languageCode) {
-        return specialization.getDetails().stream()
+        return specialization.getSpecNames().stream()
                 .filter(generalInfo -> generalInfo.getLanguage().getCode().equals(languageCode))
                 .findFirst()
-                .orElseGet(() -> specialization.getDetails().stream()
+                .orElseGet(() -> specialization.getSpecNames().stream()
                         .filter( generalInfo -> generalInfo.getLanguage().getDefaultLanguage())
-                        .findFirst().orElseGet(()-> specialization.getDetails().get(0))
+                        .findFirst().orElseGet(()-> specialization.getSpecNames().get(0))
                 );
     }
 
     @Transactional
     public SpecializationResponse createSpecialization(MultipartFile image, SpecializationRequest specializationRequest) throws IOException {
+        if(!specializationRequest.getIsHidden() && image == null){
+            throw new BadRequestException("Specialization image is mandatory");
+        }
+
+
         Specialization specialization = new Specialization();
 
-        specialization.setImgName(image.getName());
-        specialization.setImageData(image.getBytes());
+        if (!specializationRequest.getIsHidden()) {
+            specialization.setImgName(image.getName());
+            specialization.setImageData(image.getBytes());
+        }
+        specialization.setHidden(specializationRequest.getIsHidden());
 
         specialization = specializationRepository.save(specialization);
 
-        specialization.setDetails(new ArrayList<>());
+        specialization.setSpecNames(new ArrayList<>());
         for(GeneralInfoRequest generalInfoRequest : specializationRequest.getSpecializationNames()){
             generalInfoRequest.setCode("s_"+generalInfoRequest.getCode() + specialization.getId());
 
@@ -123,13 +131,14 @@ public class SpecializationService {
             specialization.setImgName(image.getName());
             specialization.setImageData(image.getBytes());
         }
+        Optional.ofNullable(specializationRequest.getIsHidden()).ifPresent(specialization::setHidden);
 
         for (GeneralInfoRequest generalInfoRequest : specializationRequest.getSpecializationNames()) {
 
             Language language = languageRepository.findById(generalInfoRequest.getLanguageId())
                     .orElseThrow(()-> new EntityNotFoundException(String.format("Language with id %s not found", generalInfoRequest.getLanguageId())));
 
-            Optional<GeneralInfo> existingGeneralInfo = specialization.getDetails().stream()
+            Optional<GeneralInfo> existingGeneralInfo = specialization.getSpecNames().stream()
                     .filter(generalInfo -> generalInfo.getCode().equals(getSpecCode(generalInfoRequest, specId)))
                     .filter(generalInfo -> generalInfo.getLanguage().getCode().equals(language.getCode()))
                     .findFirst();
@@ -165,6 +174,13 @@ public class SpecializationService {
         SpecializationPage specializationPage = specializationPageRepository.findById(specId)
                 .orElseThrow(()-> new EntityNotFoundException(String.format("Specialization Page with id: %s, not found", specId)));
 
+        if(
+                specializationPage
+                        .getSpecialization()
+                        .isHidden()
+        ){
+            throw new EntityNotFoundException(String.format("Specialization Page with id: %s, not found", specId));
+        }
         SpecializationPageResponse specializationPageResponse = specializationPageMapper.fromEntityToResponse(specializationPage);
         GeneralInfo generalInfo = getSpecializationPageGeneralInfo(specializationPage, languageCode);
 
@@ -198,6 +214,7 @@ public class SpecializationService {
         Specialization specialization = specializationRepository.findById(specId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Specialization with id %s not found", specId)));
 
+        if(specialization.isHidden()) throw new EntityNotFoundException(String.format("Specialization with id %s not found", specId));
         if(specialization.getSpecializationPage() != null) throw new EntityExistsException("Specialization page already exists");
 
         SpecializationPage specializationPage = new SpecializationPage();
@@ -206,6 +223,8 @@ public class SpecializationService {
         specializationPage.setImageName(image != null ? image.getName() : null);
 
         specializationPage.setContent(new ArrayList<>());
+        specializationPage.setSpecialization(specialization);
+
         specializationPage = specializationPageRepository.save(specializationPage);
 
         for(GeneralInfoRequest generalInfoRequest : specializationPageRequest.getPageContents()){
@@ -215,7 +234,6 @@ public class SpecializationService {
             specializationPage.addGeneralInfo(generalInfo);
         }
 
-        specialization.setSpecializationPage(specializationPage);
         specializationPage = specializationPageRepository.save(specializationPage);
 
         return specializationPageMapper.fromEntityToResponse(specializationPage);

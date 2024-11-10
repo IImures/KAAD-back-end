@@ -30,9 +30,14 @@ public class SpecializationController {
                     value = "lang",
                     required = false,
                     defaultValue = "pl"
-            ) String languageCode
+            ) String languageCode,
+            @RequestParam(
+                    value = "showHidden",
+                    required = false,
+                    defaultValue = "false"
+            ) Boolean showHidden
     ) {
-     return new ResponseEntity<>(specializationService.getAllSpecializations(languageCode), HttpStatus.OK);
+     return new ResponseEntity<>(specializationService.getAllSpecializations(languageCode, showHidden), HttpStatus.OK);
     }
 
     @GetMapping(path = "{specId}")
@@ -42,9 +47,14 @@ public class SpecializationController {
                     value = "lang",
                     required = false,
                     defaultValue = "pl"
-            ) String languageCode
+            ) String languageCode,
+            @RequestParam(
+                    value = "showHidden",
+                    required = false,
+                    defaultValue = "false"
+            ) Boolean showHidden
     ) {
-        return new ResponseEntity<>(specializationService.getSpecialization(specId, languageCode), HttpStatus.OK);
+        return new ResponseEntity<>(specializationService.getSpecialization(specId, languageCode, showHidden), HttpStatus.OK);
     }
 
     @GetMapping(path = {"{specId}/photo"}, produces = MediaType.IMAGE_JPEG_VALUE)
@@ -56,7 +66,7 @@ public class SpecializationController {
 
     @PostMapping
     public ResponseEntity<SpecializationResponse> createSpecialization(
-            @RequestPart("image") MultipartFile image,
+            @Nullable @RequestPart("image") MultipartFile image,
             @RequestPart("body") SpecializationRequest specializationRequest
     ) throws IOException {
         return new ResponseEntity<>(specializationService.createSpecialization(image, specializationRequest), HttpStatus.CREATED);

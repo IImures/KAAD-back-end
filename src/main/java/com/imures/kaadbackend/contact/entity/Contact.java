@@ -1,5 +1,7 @@
 package com.imures.kaadbackend.contact.entity;
 
+import com.imures.kaadbackend.language.entity.Language;
+import com.imures.kaadbackend.specialization.entity.Specialization;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,8 +26,11 @@ public class Contact {
     @Column
     private String email;
 
-    @Column(nullable = false)
-    private String reason;
+    @ManyToOne
+    private Specialization specialization;
+
+    @ManyToOne
+    private Language language;
 
     @Column(nullable = false)
     private OffsetDateTime createdAt;

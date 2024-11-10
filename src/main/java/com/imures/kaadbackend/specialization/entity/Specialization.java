@@ -16,13 +16,11 @@ public class Specialization {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "spec_page", referencedColumnName = "id")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "specialization", fetch = FetchType.LAZY)
     private SpecializationPage specializationPage;
 
-    // Todo details -> specNames
     @OneToMany(cascade = CascadeType.ALL)
-    private List<GeneralInfo> details;
+    private List<GeneralInfo> specNames;
 
     @Column(nullable = true)
     private String imgName;
@@ -32,8 +30,11 @@ public class Specialization {
     @Basic(fetch = FetchType.LAZY)
     private byte[] imageData;
 
+    @Column(nullable = false)
+    private boolean isHidden = false;
+
     public void addGeneralInfo(GeneralInfo generalInfo) {
-        details.add(generalInfo);
+        specNames.add(generalInfo);
     }
 
 }

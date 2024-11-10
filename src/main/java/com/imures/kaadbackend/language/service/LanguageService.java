@@ -88,12 +88,14 @@ public class LanguageService {
         }
     }
 
+    @Transactional
     public void deleteLanguage(Long languageId) {
         Language language = languageRepository.findById(languageId)
                 .orElseThrow(()-> new EntityNotFoundException(String.format("Language with id: %s, not found", languageId)));
         languageRepository.delete(language);
     }
 
+    @Transactional(readOnly = true)
     public byte[] getLanguageImage(Long languageId) {
         Language language = languageRepository.findById(languageId)
                 .orElseThrow(()-> new EntityNotFoundException(String.format("Language with id: %s, not found", languageId)));

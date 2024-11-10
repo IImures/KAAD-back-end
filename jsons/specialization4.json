@@ -1,0 +1,15 @@
+{
+  "specializationNames" : [
+    {
+      "content" : "Inne",
+      "code" : "odk",
+      "languageId" : 1
+    },
+    {
+      "content" : "Other",
+      "code" : "odk",
+      "languageId" : 2
+    }
+  ],
+  "isHidden" : "true"
+}

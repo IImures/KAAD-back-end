@@ -14,5 +14,9 @@ public interface ContactRepository extends JpaRepository<Contact, Long> {
 
     Page<Contact> findALlByContactType_IdIn(Pageable pageable, Set<Long> ids);
 
-    Optional<Contact> findByUUID(String uuid);
+    Optional<Contact> findTop1ByUUIDOrderByCreatedAtDesc(String uuid);
+
+    default Optional<Contact> findLatestByUUID(String uuid) {
+        return findTop1ByUUIDOrderByCreatedAtDesc(uuid);
+    }
 }

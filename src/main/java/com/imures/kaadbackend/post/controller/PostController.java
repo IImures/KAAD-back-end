@@ -19,16 +19,11 @@ import java.nio.file.AccessDeniedException;
 @RestController
 @RequestMapping("api/v1/post")
 @RequiredArgsConstructor
+@CrossOrigin("http://localhost:4200/")
 public class PostController {
 
     private final PostService postService;
     private final JwtService jwtService;
-
-
-//    @GetMapping
-//    public ResponseEntity<List<PostResponse>> getAllPosts() {
-//        return new ResponseEntity<>(postService.findAll(), HttpStatus.OK);
-//    }
 
     @GetMapping
     public ResponseEntity<Page<PostResponse>> getPagedPosts(
@@ -49,8 +44,6 @@ public class PostController {
             ) String sortBy
     ) {
         Pageable pageRequest = PageRequest.of(page, limit, Sort.by(sortBy));
-        Page<PostResponse> response;
-
         return new ResponseEntity<>(postService.findPaged(pageRequest), HttpStatus.OK);
     }
 

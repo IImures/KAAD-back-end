@@ -10,5 +10,6 @@ public class ContactRequest {
     private String phoneNumber;
     private String email;
     private Long contactTypeId;
-    private String reason;
+    private Long specializationId;
+    private String languageCode;
 }

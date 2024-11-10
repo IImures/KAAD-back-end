@@ -11,4 +11,6 @@ public interface LanguageRepository extends JpaRepository<Language, Long> {
 
     Optional<Language> findByDefaultLanguage(Boolean defaultLanguage);
 
+    Optional<Language> findByCode(String code);
+
 }
