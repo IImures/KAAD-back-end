@@ -250,6 +250,11 @@ public class SpecializationService {
         }
 
         Long specPageId = specializationPage.getId();
+        if(specializationPageRequest == null){
+            specializationPage = specializationPageRepository.save(specializationPage);
+            return specializationPageMapper.fromEntityToResponse(specializationPage);
+        }
+
         for (GeneralInfoRequest generalInfoRequest : specializationPageRequest.getPageContents()) {
 
             Language language = languageRepository.findById(generalInfoRequest.getLanguageId())

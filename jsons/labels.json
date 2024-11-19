@@ -84,6 +84,12 @@
 },
 
 {
+    "content" : "<h5>Potzrebujesz dalszego wsparcia?</h5><span>Sprawdz czy mozemy ci pomoc</span>",
+    "code" : "contactBanner",
+    "languageId" : 1
+},
+
+{
     "content" : "<h5>Do you need further support?</h5><span>Check if we can help you. Call or write to us.</span>",
     "code" : "contactBanner",
     "languageId" : 2

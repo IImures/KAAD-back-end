@@ -122,7 +122,7 @@ public class SpecializationController {
     public ResponseEntity<SpecializationPageResponse> updateSpecializationPage(
             @PathVariable Long specId,
             @RequestPart("image") @Nullable MultipartFile image,
-            @RequestPart("body") SpecializationPageRequest specializationPageRequest
+            @RequestPart("body") @Nullable SpecializationPageRequest specializationPageRequest
     ) throws IOException {
         return new ResponseEntity<>(specializationService.updateSpecializationPage(specializationPageRequest, image, specId), HttpStatus.CREATED);
     }

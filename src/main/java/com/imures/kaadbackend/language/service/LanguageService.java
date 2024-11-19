@@ -83,8 +83,6 @@ public class LanguageService {
             }finally {
                 language.setDefaultLanguage(true);
             }
-        }else{
-            language.setDefaultLanguage(false);
         }
     }
 

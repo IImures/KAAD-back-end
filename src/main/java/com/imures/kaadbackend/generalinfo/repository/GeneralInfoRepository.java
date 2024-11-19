@@ -11,4 +11,6 @@ public interface GeneralInfoRepository extends JpaRepository<GeneralInfo, Long> 
 
     Optional<GeneralInfo> findByCodeAndLanguage_Code(String code, String languageCode);
 
+    Optional<GeneralInfo> findByCodeAndLanguage_DefaultLanguage(String code, Boolean defaultLanguage);
+
 }

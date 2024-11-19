@@ -17,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/language")
 @RequiredArgsConstructor
+@CrossOrigin("http://localhost:4200/")
 public class LanguageController {
 
     private final LanguageService languageService;
@@ -56,12 +57,18 @@ public class LanguageController {
     ) throws IOException {
         return new ResponseEntity<>(languageService.updateLanguage(languageId, languageRequest, image), HttpStatus.OK);
     }
-
+    @CrossOrigin(origins = "http://localhost:4200")
     @DeleteMapping(path = "{languageId}")
     public ResponseEntity<Void> deleteLanguage(
             @PathVariable Long languageId
     ){
         languageService.deleteLanguage(languageId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @CrossOrigin(origins = "http://localhost:4200")
+    @RequestMapping(value = "/**", method = RequestMethod.OPTIONS)
+    public ResponseEntity<?> handleOptions() {
+        return ResponseEntity.ok().build();
     }
 }

@@ -43,11 +43,16 @@ public class GeneralInfoService {
 
     @Transactional //Used in TeamMemberService updateTeamMember!
     public GeneralInfoResponse getByCodeAndLanguage(String code, String languageCode) {
-        return generalInfoMapper.fromEntityToResponse(
-                generalInfoRepository.findByCodeAndLanguage_Code(
-                        code, languageCode
-                ).orElseThrow(()-> new EntityNotFoundException(String.format("General info with code: %s not found and language: %s", code, languageCode)))
+        Optional<GeneralInfo> generalInfoOptional = generalInfoRepository.findByCodeAndLanguage_Code(code, languageCode);
+
+        GeneralInfo generalInfo = generalInfoOptional.orElseGet(() ->
+                generalInfoRepository.findByCodeAndLanguage_DefaultLanguage(code, true)
+                        .orElseThrow(() -> new EntityNotFoundException(
+                                String.format("General info with code: %s not found in any language", code)
+                        ))
         );
+
+        return generalInfoMapper.fromEntityToResponse(generalInfo);
     }
 
     @Transactional
