@@ -1,12 +1,12 @@
 {
     "specializationNames" : [
         {
-            "content" : "Odszkodowanie1",
+            "content" : "Odszkodowanie21",
             "code" : "odk",
             "languageId" : 1
         },
         {
-            "content" : "Returns1",
+            "content" : "Returns21",
             "code" : "odk",
             "languageId" : 2
         }
