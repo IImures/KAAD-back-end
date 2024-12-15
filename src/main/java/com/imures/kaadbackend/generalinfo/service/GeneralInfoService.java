@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,16 +72,28 @@ public class GeneralInfoService {
         info.setContent(generalInfoRequest.getContent());
         info.setCode(generalInfoRequest.getCode());
         info.setLanguage(language);
+        Optional.ofNullable(generalInfoRequest.getIsLabel()).ifPresent(info::setIsLabel);
+        if(Optional.ofNullable(generalInfoRequest.getIsLabel()).isEmpty()){
+            info.setIsLabel(false);
+        }
 
         return generalInfoRepository.save(info);
     }
 
     @Transactional
-    public GeneralInfoResponse update(GeneralInfoRequest generalInfoRequest, Long genId) {
-        GeneralInfo info =  generalInfoRepository.findById(genId)
-                .orElseThrow(()-> new EntityNotFoundException(String.format("General info with id %s not found", genId)));
+    public GeneralInfoResponse update(GeneralInfoRequest generalInfoRequest, String languageCode, String code) {
+        Optional<GeneralInfo> optional =  generalInfoRepository.findByCodeAndLanguage_Code(code, languageCode);
 
+        if(optional.isEmpty()) {
+            return generalInfoMapper.fromEntityToResponse(
+                    create(generalInfoRequest)
+            );
+        }
+        GeneralInfo info = optional.get();
+
+        Optional.ofNullable(generalInfoRequest.getIsLabel()).ifPresent(info::setIsLabel);
         Optional.ofNullable(generalInfoRequest.getContent()).ifPresent(info::setContent);
+        Optional.ofNullable(generalInfoRequest.getIsLabel()).ifPresent(info::setIsLabel);
         Optional.ofNullable(generalInfoRequest.getLanguageId()).ifPresent((aLong ->
                 info.setLanguage(
                         languageRepository
@@ -117,11 +130,20 @@ public class GeneralInfoService {
             info.setContent(generalInfoRequest.getContent());
             info.setCode(generalInfoRequest.getCode());
             info.setLanguage(language);
+            info.setIsLabel(generalInfoRequest.getIsLabel());
 
             responses.add(
                     generalInfoMapper.fromEntityToResponse(generalInfoRepository.save(info))
             );
         }
         return responses;
+    }
+
+    @Transactional(readOnly = true)
+    public List<GeneralInfoResponse> getLabels() {
+        return generalInfoRepository.findGeneralInfoByIsLabelAndLanguage_DefaultLanguageTrue(true)
+                .stream().map(generalInfoMapper::fromEntityToResponse)
+                .sorted(Comparator.comparing(GeneralInfoResponse::getId))
+                .toList();
     }
 }

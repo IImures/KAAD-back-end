@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/specialization")
 @RequiredArgsConstructor
-@CrossOrigin("http://localhost:4200/")
+    @CrossOrigin("http://localhost:4200/")
 public class SpecializationController {
 
     private final SpecializationService specializationService;
@@ -109,6 +109,14 @@ public class SpecializationController {
         return new ResponseEntity<>(specializationService.getSpecializationPagePhoto(specId), HttpStatus.OK);
     }
 
+    @DeleteMapping(path = "{specId}/page/photo")
+    public ResponseEntity<Void> deleteSpecializationPagePhoto(
+            @PathVariable Long specId
+    ){
+        specializationService.deleteSpecializationPagePhoto(specId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @PostMapping(path = {"{specId}/page"})
     public ResponseEntity<SpecializationPageResponse> createSpecializationPage(
             @PathVariable Long specId,
@@ -126,5 +134,23 @@ public class SpecializationController {
     ) throws IOException {
         return new ResponseEntity<>(specializationService.updateSpecializationPage(specializationPageRequest, image, specId), HttpStatus.CREATED);
     }
+
+    @DeleteMapping(path = {"{specId}/page"})
+    public ResponseEntity<Void> deleteSpecializationPage(
+            @PathVariable Long specId,
+            @RequestParam(
+                    value = "lang",
+                    required = false
+            ) String languageCode
+    ){
+        if(languageCode == null){
+            specializationService.deleteSpecializationPage(specId);
+        }else{
+            specializationService.deleteSpecializationPageOfLanguage(specId, languageCode);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
 
 }

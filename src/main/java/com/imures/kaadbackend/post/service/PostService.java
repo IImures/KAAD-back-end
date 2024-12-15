@@ -94,4 +94,10 @@ public class PostService {
         Page<Post> posts = postRepository.findAll(pageRequest);
         return posts.map(postMapper::fromEntityToResponse);
     }
+
+    public byte[] getAuthorImage(Long postId) {
+        return postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Post with id %s not found", postId)))
+                .getAuthor().getBlogImage();
+    }
 }

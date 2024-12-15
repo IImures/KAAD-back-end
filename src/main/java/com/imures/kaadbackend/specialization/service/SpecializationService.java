@@ -51,6 +51,7 @@ public class SpecializationService {
         for (Specialization specialization : specializations) {
             SpecializationResponse specializationResponse = new SpecializationResponse();
             specializationResponse.setId(specialization.getId());
+            specializationResponse.setIsHidden(specialization.isHidden());
             specializationResponse.setGeneralInfo(
                     generalInfoMapper.fromEntityToResponse(
                             getSpecializationGeneralInfo(specialization, languageCode)
@@ -143,7 +144,7 @@ public class SpecializationService {
                     .filter(generalInfo -> generalInfo.getLanguage().getCode().equals(language.getCode()))
                     .findFirst();
 
-            existingGeneralInfo.ifPresent(generalInfo -> generalInfoService.update(generalInfoRequest, generalInfo.getId()));
+            existingGeneralInfo.ifPresent(generalInfo -> generalInfoService.update(generalInfoRequest, generalInfo.getLanguage().getCode(), generalInfo.getCode()));
 
             if(existingGeneralInfo.isEmpty()){
                 generalInfoRequest.setCode(getSpecCode(generalInfoRequest, specialization.getId()));
@@ -156,13 +157,16 @@ public class SpecializationService {
         return specializationMapper.fromEntityToResponse(specializationRepository.save(specialization));
     }
 
+    @Transactional
     public void deleteSpecialization(Long specId) {
         Specialization specialization = specializationRepository.findById(specId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Specialization with id %s not found", specId)));
+        specialization.getContacts().forEach(contact -> contact.setSpecialization(null));
 
         specializationRepository.delete(specialization);
     }
 
+    @Transactional(readOnly = true)
     public byte[] getSpecializationPhoto(Long specId) {
         return specializationRepository.findById(specId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Specialization Photo with id: %s, not found", specId)))
@@ -264,7 +268,7 @@ public class SpecializationService {
                     .filter(generalInfo -> generalInfo.getLanguage().getCode().equals(language.getCode()))
                     .findFirst();
 
-            existingGeneralInfo.ifPresent(generalInfo -> generalInfoService.update(generalInfoRequest, existingGeneralInfo.get().getId()));
+            existingGeneralInfo.ifPresent(generalInfo -> generalInfoService.update(generalInfoRequest, existingGeneralInfo.get().getLanguage().getCode(), existingGeneralInfo.get().getCode()));
             if(existingGeneralInfo.isEmpty()){
                 generalInfoRequest.setCode(getSpecPageCode(generalInfoRequest, specializationPage.getId()));
 
@@ -285,5 +289,35 @@ public class SpecializationService {
 
     private static String getSpecCode(GeneralInfoRequest generalInfoRequest, Long specializationId) {
         return "s_" + generalInfoRequest.getCode() + specializationId;
+    }
+
+    public void deleteSpecializationPagePhoto(Long specId) {
+        SpecializationPage specializationPage = specializationPageRepository.findById(specId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Specialization Page with id %s not found", specId)));
+        specializationPage.setImageName(null);
+        specializationPage.setImageData(null);
+        specializationPageRepository.save(specializationPage);
+    }
+
+    @Transactional
+    public void deleteSpecializationPage(Long specId) {
+        SpecializationPage specializationPage = specializationPageRepository.findById(specId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Specialization Page with id %s not found", specId)));
+        specializationPage.getSpecialization().setSpecializationPage(null);
+    }
+
+    @Transactional
+    public void deleteSpecializationPageOfLanguage(Long specId, String languageCode) {
+        SpecializationPage specializationPage = specializationPageRepository.findById(specId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Specialization Page with id %s not found", specId)));
+//        Optional<GeneralInfo> translation = specializationPage.getContent().stream()
+//                .filter(generalInfo -> generalInfo.getLanguage().getCode().equals(languageCode)).findFirst();
+        specializationPage.getContent().removeIf(
+                generalInfo -> generalInfo.getLanguage().getCode().equals(languageCode)
+        );
+//        if(specializationPage.getContent().isEmpty()){
+//            specializationPageRepository.delete(specializationPage);
+//        }
+        specializationPageRepository.save(specializationPage);
     }
 }

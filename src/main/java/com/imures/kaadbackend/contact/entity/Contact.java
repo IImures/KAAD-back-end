@@ -27,9 +27,11 @@ public class Contact {
     private String email;
 
     @ManyToOne
+    @JoinColumn(name = "specialization_id", foreignKey = @ForeignKey(name = "fk_specialization"))
     private Specialization specialization;
 
     @ManyToOne
+    @JoinColumn(name = "language_id", foreignKey = @ForeignKey(name = "fk_language"))
     private Language language;
 
     @Column(nullable = false)
@@ -39,6 +41,7 @@ public class Contact {
     private boolean resolved;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @JoinColumn(nullable = true, name = "contact_type_id", foreignKey = @ForeignKey(name = "fk_contact_type"))
     private ContactType contactType;
 
     @Column(nullable = false)

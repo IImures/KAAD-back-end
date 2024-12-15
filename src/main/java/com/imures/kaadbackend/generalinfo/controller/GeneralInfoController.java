@@ -44,6 +44,11 @@ public class GeneralInfoController {
         return new ResponseEntity<>(generalInfoService.getByCodeAndLanguage(generalCode, languageCode), HttpStatus.OK);
     }
 
+    @GetMapping(path = "labels")
+    public ResponseEntity<List<GeneralInfoResponse>> getAllLabels(){
+        return new ResponseEntity<>(generalInfoService.getLabels(), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<GeneralInfoResponse> createGeneralInfo(
             @RequestBody GeneralInfoRequest generalInfoRequest
@@ -67,12 +72,17 @@ public class GeneralInfoController {
     }
 
 
-    @PutMapping("{genId}")
-    public ResponseEntity<GeneralInfoResponse> createGeneralInfo(
+    @PutMapping
+    public ResponseEntity<GeneralInfoResponse> updateGeneralInfo(
             @RequestBody GeneralInfoRequest generalInfoRequest,
-            @PathVariable Long genId
+            @RequestParam(
+                    value = "lang"
+            ) String languageCode,
+            @RequestParam(
+                    value = "code"
+            ) String code
     ){
-        return new ResponseEntity<>(generalInfoService.update(generalInfoRequest, genId), HttpStatus.CREATED);
+        return new ResponseEntity<>(generalInfoService.update(generalInfoRequest, languageCode, code), HttpStatus.OK);
     }
 
     @DeleteMapping("{genId}")

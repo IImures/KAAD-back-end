@@ -7,10 +7,10 @@ create table contact (
      phone_number varchar(255),
      resolved boolean not null default false,
      contact_type_id bigint,
-     specialization_id bigint not null,
+     specialization_id bigint,
      language_id bigint not null,
      primary key (id),
      constraint fk_contact_type foreign key (contact_type_id) references contact_type,
-     constraint fk_specialization foreign key (specialization_id) references specialization,
+     constraint fk_specialization foreign key (specialization_id) references specialization on delete set null ,
      constraint fk_language foreign key (language_id) references language
 )

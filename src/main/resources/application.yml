@@ -1,4 +1,11 @@
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: automailserviceka@gmail.com
+    password: adgd nwok faed mycz
+
+
   application:
     name: KAAD-back-end
   datasource:
@@ -26,6 +33,10 @@ spring:
 
 
 application:
+  contact:
+    creationTimeout: 2
+    mail: vladyslav.kalynchenko@gmail.com
+
   security:
     jwt:
       secret-key: 932d996565c8733fb97bc6cdf77398c3a85cca61a2e2664502291458cb3983a48277fd40eec8d4d44626c29d5fcb7c27df55cfd12885ad578f23d6c24a8749a0f26f4b05c35d25fd34afec12a19cbb32d13ee1bb3b9430dfb2ae7b4f9676026c3e5ebf8ef45c078beb559c60fd4fb9f3f65bd662f9349a17b8df07b50e72d364075998587c97d67f12d08c5350d91e1476cfee45cf8d12d71560c3bfab9261a559f80e0fcdffd4c04ed66d33e6e7063cd25d8ec389e59ced07efb45050c69525e117aa3f878d08fb9e3f425b7805b0b54a5cac6809b3d014ed0d6eaa77f3d788d443f8cc72b0d3e63603569538ab3136f08bb7e46f5c7e7922e624535d4d8cf9

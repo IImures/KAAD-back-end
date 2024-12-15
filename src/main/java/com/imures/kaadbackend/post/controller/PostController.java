@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,6 +53,13 @@ public class PostController {
             @PathVariable Long postId
     ) {
         return new ResponseEntity<>(postService.getById(postId), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "{postId}/author-image", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<byte[]> getPostAuthorImage(
+            @PathVariable Long postId
+    ){
+        return new ResponseEntity<>(postService.getAuthorImage(postId), HttpStatus.OK);
     }
 
     @PostMapping

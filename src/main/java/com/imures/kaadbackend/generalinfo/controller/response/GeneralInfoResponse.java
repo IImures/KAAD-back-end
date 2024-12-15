@@ -11,4 +11,5 @@ public class GeneralInfoResponse {
     private String content;
     private String code;
     private LanguageResponse language;
+    private Boolean isLabel;
 }

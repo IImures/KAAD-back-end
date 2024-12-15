@@ -21,7 +21,7 @@ public class SpecializationPage {
     @JoinColumn(name = "id")
     private Specialization specialization;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GeneralInfo> content = new ArrayList<>();
 
     @Column

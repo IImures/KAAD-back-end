@@ -9,4 +9,5 @@ public class GeneralInfoRequest {
     private String content;
     private String code;
     private Long languageId;
+    private Boolean isLabel = null;
 }

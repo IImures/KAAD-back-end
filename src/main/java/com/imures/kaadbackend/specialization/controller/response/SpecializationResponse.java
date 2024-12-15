@@ -9,4 +9,5 @@ import lombok.Setter;
 public class SpecializationResponse {
     private Long id;
     private GeneralInfoResponse generalInfo;
+    private Boolean isHidden;
 }
