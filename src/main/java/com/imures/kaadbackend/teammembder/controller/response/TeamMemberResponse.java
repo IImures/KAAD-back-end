@@ -13,4 +13,5 @@ public class TeamMemberResponse {
     private String email;
     private String phone;
     private GeneralInfoResponse description;
+    private Long priority;
 }

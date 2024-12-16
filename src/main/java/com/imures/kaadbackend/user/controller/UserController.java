@@ -39,7 +39,7 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping(value = "/login")
+    @PostMapping(value = "/login"   )
     public ResponseEntity<AuthenticationResponse> login(
             @RequestBody AuthenticationRequest request
     ){
