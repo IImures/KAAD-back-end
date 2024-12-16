@@ -3,6 +3,7 @@ package com.imures.kaadbackend.specialization.entity;
 import com.imures.kaadbackend.contact.entity.Contact;
 import com.imures.kaadbackend.generalinfo.entity.GeneralInfo;
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,7 +29,7 @@ public class Specialization {
 
     @Lob
     @Column(nullable = true)
-    @Basic(fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
     private byte[] imageData;
 
     @Column(nullable = false)

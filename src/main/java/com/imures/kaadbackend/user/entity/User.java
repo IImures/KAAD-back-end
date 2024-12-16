@@ -41,7 +41,7 @@ public class User implements UserDetails {
     @Lob
     @Column(nullable = true)
     @EqualsAndHashCode.Exclude
-    private byte[] blogImage;
+    private byte[] blogImage;//byte[]
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

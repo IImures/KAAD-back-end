@@ -30,6 +30,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TeamMemberService {
 
+    public static final String TEAM_MEMBER_WITH_ID_NOT_FOUND = "TeamMember with id %s not found";
     private final TeamMemberRepository teamMemberRepository;
     private final TeamMemberMapper teamMemberMapper;
     private final GeneralInfoService generalInfoService;
@@ -71,7 +72,7 @@ public class TeamMemberService {
     public TeamMemberResponse getMember(Long memberId, String languageCode) {
         TeamMember teamMember = teamMemberRepository
                 .findById(memberId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("TeamMember with id %s not found", memberId)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(TEAM_MEMBER_WITH_ID_NOT_FOUND, memberId)));
 
         TeamMemberResponse teamMemberResponse = teamMemberMapper.fromEntityToResponse(teamMember);
         GeneralInfo description = getMemberGeneralInfo(teamMember, languageCode);
@@ -111,7 +112,7 @@ public class TeamMemberService {
     @Transactional
     public TeamMemberResponse updateMember(TeamMemberRequest teamMemberRequest, MultipartFile image, Long memberId) throws IOException {
         TeamMember teamMember = teamMemberRepository.findById(memberId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("TeamMember with id %s not found", memberId)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(TEAM_MEMBER_WITH_ID_NOT_FOUND, memberId)));
 
         Optional.ofNullable(teamMemberRequest.getFirstName()).ifPresent(teamMember::setFirstName);
         Optional.ofNullable(teamMemberRequest.getLastName()).ifPresent(teamMember::setLastName);
@@ -129,21 +130,20 @@ public class TeamMemberService {
                Language language = languageRepository.findById(generalInfoRequest.getLanguageId())
                                .orElseThrow(()-> new EntityNotFoundException(String.format("Language with id: %s not found", generalInfoRequest.getLanguageId())));
 
+               String code = "tm_" + generalInfoRequest.getCode() + teamMember.getId();
                try{
                    GeneralInfo generalInfo =  generalInfoRepository.findByCodeAndLanguage_Code(
-                           generalInfoRequest.getCode(), language.getCode()
+                           code, language.getCode()
                            )
                            .orElseThrow(()-> new EntityNotFoundException(String.format("General info with code: %s not found and language: %s", generalInfoRequest.getCode(), language.getCode())));
                    teamMember.getDescriptions().remove(generalInfo);
                    generalInfoService.delete(generalInfo.getId());
-               }catch (EntityNotFoundException ignored){
-
-               }
-               finally {
+               } finally {
                    GeneralInfo generalInfo = new GeneralInfo();
                    generalInfo.setLanguage(language);
-                   generalInfo.setCode(generalInfoRequest.getCode());
+                   generalInfo.setCode(code);
                    generalInfo.setContent(generalInfoRequest.getContent());
+                   generalInfo.setIsLabel(generalInfoRequest.getIsLabel());
                    teamMember.addGeneralInfo(generalInfo);
                }
            }
@@ -155,14 +155,14 @@ public class TeamMemberService {
     @Transactional
     public void deleteMember(Long memberId) {
         TeamMember teamMember = teamMemberRepository.findById(memberId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("TeamMember with id %s not found", memberId)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(TEAM_MEMBER_WITH_ID_NOT_FOUND, memberId)));
         teamMemberRepository.delete(teamMember);
     }
 
     public byte[] getMemberPhoto(Long memberId) {
         return teamMemberRepository
                 .findById(memberId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("TeamMember with id %s not found", memberId)))
+                .orElseThrow(() -> new EntityNotFoundException(String.format(TEAM_MEMBER_WITH_ID_NOT_FOUND, memberId)))
                 .getImageData();
     }
 }
