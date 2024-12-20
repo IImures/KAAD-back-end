@@ -27,6 +27,7 @@ public class SpecializationPage {
     @Column
     private String imageName;
 
+    @Lob
     @Column
     private byte[] imageData;
 

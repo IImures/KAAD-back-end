@@ -19,6 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class LanguageService {
 
+    public static final String LANGUAGE_WITH_ID_NOT_FOUND = "Language with id: %s, not found";
     private final LanguageRepository languageRepository;
     private final LanguageMapper languageMapper;
 
@@ -35,7 +36,7 @@ public class LanguageService {
     public LanguageResponse getLanguageById(Long languageId) {
         return languageMapper.fromEntityToResponse(
                 languageRepository.findById(languageId)
-                        .orElseThrow(()-> new EntityNotFoundException(String.format("Language with id: %s, not found", languageId)))
+                        .orElseThrow(()-> new EntityNotFoundException(String.format(LANGUAGE_WITH_ID_NOT_FOUND, languageId)))
         );
     }
 
@@ -56,11 +57,11 @@ public class LanguageService {
     @Transactional
     public LanguageResponse updateLanguage(Long languageId, LanguageRequest languageRequest, MultipartFile image) throws IOException {
         Language language = languageRepository.findById(languageId)
-                .orElseThrow(()-> new EntityNotFoundException(String.format("Language with id: %s, not found", languageId)));
+                .orElseThrow(()-> new EntityNotFoundException(String.format(LANGUAGE_WITH_ID_NOT_FOUND, languageId)));
 
         Optional.ofNullable(languageRequest.getLanguage()).ifPresent(language::setLanguage);
         Optional.ofNullable(languageRequest.getCode()).ifPresent(language::setCode);
-        Optional.ofNullable(languageRequest.getDefaultLanguage()).ifPresent((bool)-> updateDefaultLanguage(languageRequest, language));
+        Optional.ofNullable(languageRequest.getDefaultLanguage()).ifPresent(bool-> updateDefaultLanguage(languageRequest, language));
 
         if(image != null) {
             language.setImageData(image.getBytes());
@@ -83,20 +84,22 @@ public class LanguageService {
             }finally {
                 language.setDefaultLanguage(true);
             }
+        }else{
+            language.setDefaultLanguage(false);
         }
     }
 
     @Transactional
     public void deleteLanguage(Long languageId) {
         Language language = languageRepository.findById(languageId)
-                .orElseThrow(()-> new EntityNotFoundException(String.format("Language with id: %s, not found", languageId)));
+                .orElseThrow(()-> new EntityNotFoundException(String.format(LANGUAGE_WITH_ID_NOT_FOUND, languageId)));
         languageRepository.delete(language);
     }
 
     @Transactional(readOnly = true)
     public byte[] getLanguageImage(Long languageId) {
         Language language = languageRepository.findById(languageId)
-                .orElseThrow(()-> new EntityNotFoundException(String.format("Language with id: %s, not found", languageId)));
+                .orElseThrow(()-> new EntityNotFoundException(String.format(LANGUAGE_WITH_ID_NOT_FOUND, languageId)));
         return language.getImageData();
     }
 }
