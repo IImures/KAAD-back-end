@@ -1,5 +1,6 @@
 package com.imures.kaadbackend.configuration;
 
+import com.imures.kaadbackend.user.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -30,8 +31,12 @@ public class JwtService {
     @Value("${application.security.jwt.refresh-expiration-time}")
     private long REFRESH_EXPIRATION_TIME;
 
-    public String generateToken(UserDetails userDetails){
-        return generateToken(new HashMap<>(), userDetails);
+    public String generateToken(User userDetails){
+        HashMap<String, Object> claims = new HashMap<>();
+        claims.put("firstName",userDetails.getFirstName());
+        claims.put("lastName",userDetails.getLastName());
+        claims.put("id",userDetails.getId());
+        return generateToken(claims, userDetails);
     }
 
     public String generateToken(
@@ -70,7 +75,7 @@ public class JwtService {
         return (extractedUserMail.equals(userDetails.getUsername()) && !expiration.before(new Date()));
     }
 
-    private boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 

@@ -2,21 +2,25 @@ package com.imures.kaadbackend.user.controller;
 
 import com.imures.kaadbackend.configuration.JwtService;
 import com.imures.kaadbackend.user.controller.request.AuthenticationRequest;
+import com.imures.kaadbackend.user.controller.request.PasswordRequest;
 import com.imures.kaadbackend.user.controller.request.UserRequest;
 import com.imures.kaadbackend.user.controller.response.AuthenticationResponse;
 import com.imures.kaadbackend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("api/v1/user")
+@CrossOrigin("http://localhost:4200/")
 public class UserController {
 
     private final UserService userService;
@@ -39,7 +43,7 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping(value = "/login"   )
+    @PostMapping(value = "/login")
     public ResponseEntity<AuthenticationResponse> login(
             @RequestBody AuthenticationRequest request
     ){
@@ -59,6 +63,25 @@ public class UserController {
     ){
         userService.validate(token.substring(7));
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("passwordReset")
+    public ResponseEntity<Void> changeUserPassword(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+            @RequestBody PasswordRequest password
+    ) throws AccessDeniedException {
+        userService.changeUserPassword(password, token.substring(7));
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping(
+            path = "photo",
+            produces = MediaType.IMAGE_JPEG_VALUE
+    )
+    public ResponseEntity<byte[]> getUserImage(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String token
+    ) throws AccessDeniedException {
+        return new ResponseEntity<>(userService.getUserPhoto(token.substring(7)), HttpStatus.OK);
     }
 
 }

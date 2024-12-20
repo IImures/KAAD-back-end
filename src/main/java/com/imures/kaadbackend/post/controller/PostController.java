@@ -44,7 +44,7 @@ public class PostController {
                     defaultValue = "id"
             ) String sortBy
     ) {
-        Pageable pageRequest = PageRequest.of(page, limit, Sort.by(sortBy));
+        Pageable pageRequest = PageRequest.of(page, limit, Sort.by(sortBy).descending());
         return new ResponseEntity<>(postService.findPaged(pageRequest), HttpStatus.OK);
     }
 

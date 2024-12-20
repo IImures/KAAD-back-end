@@ -3,6 +3,7 @@ package com.imures.kaadbackend.roles.entity;
 import com.imures.kaadbackend.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Set;
@@ -18,6 +19,7 @@ public class Role implements GrantedAuthority {
     private String authority;
 
     @ManyToMany(mappedBy = "roles")
+    @EqualsAndHashCode.Exclude
     private Set<User> users;
 
     @Override

@@ -5,6 +5,7 @@ import com.imures.kaadbackend.configuration.JwtService;
 import com.imures.kaadbackend.roles.entity.Role;
 import com.imures.kaadbackend.roles.repository.RoleRepository;
 import com.imures.kaadbackend.user.controller.request.AuthenticationRequest;
+import com.imures.kaadbackend.user.controller.request.PasswordRequest;
 import com.imures.kaadbackend.user.controller.request.UserRequest;
 import com.imures.kaadbackend.user.controller.response.AuthenticationResponse;
 import com.imures.kaadbackend.user.entity.User;
@@ -22,12 +23,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.util.HashSet;
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class UserService{
+public class UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -113,19 +115,49 @@ public class UserService{
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public void validate(String token) {
         String userMail = jwtService.extractUsername(token);
         User user = userRepository.findUserByEmail(userMail)
                 .orElseThrow(()-> new UsernameNotFoundException("User does not exists"));
-        if(!jwtService.isTokenValid(token, user)){
+        if(!jwtService.isTokenValid(token, user)){ // ??????????????
             throw new BadCredentialsException("Invalid token");
         }
     }
 
+    @Transactional
     public void updateBlogImage(MultipartFile image, String userMail) throws IOException {
         User user = userRepository.findUserByEmail(userMail)
                 .orElseThrow(()-> new UsernameNotFoundException("User does not exists"));
         user.setBlogImage(image.getBytes());
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public byte[] getUserPhoto(String token) throws AccessDeniedException {
+        String userMail = jwtService.extractUsername(token);
+        User user = userRepository.findUserByEmail(userMail)
+                .orElseThrow(()-> new UsernameNotFoundException("User does not exists"));
+        if(!jwtService.isTokenValid(token, user)){ // ??????????????
+            throw new AccessDeniedException("Invalid token");
+        }
+
+        if(user.getBlogImage() == null){
+            throw new EntityNotFoundException("User does not have blog image");
+        }
+        return user.getBlogImage();
+    }
+
+    @Transactional
+    public void changeUserPassword(PasswordRequest password, String token) throws AccessDeniedException {
+        if(jwtService.isTokenExpired(token)){
+            throw new AccessDeniedException("Session expired");
+        }
+        String userMail = jwtService.extractUsername(token);
+
+        User user = userRepository.findUserByEmail(userMail)
+                .orElseThrow(()-> new UsernameNotFoundException("User does not exists"));
+        user.setPassword(passwordEncoder.encode(password.getPassword().trim()));
         userRepository.save(user);
     }
 }

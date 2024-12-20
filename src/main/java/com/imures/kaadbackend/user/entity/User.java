@@ -38,10 +38,9 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private Boolean isEnabled;
 
-    @Lob
-    @Column(nullable = true)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
-    private byte[] blogImage;
+    private UserImage blogImage;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -55,6 +54,17 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "author")
     @EqualsAndHashCode.Exclude
     private Set<Post> posts;
+
+    public byte[] getBlogImage() {
+        return blogImage.getImageData();
+    }
+
+    public void setBlogImage(byte[] blogImage) {
+        UserImage userImage = new UserImage();
+        userImage.setImageData(blogImage);
+        userImage.setUser(this);
+        this.blogImage = userImage;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
