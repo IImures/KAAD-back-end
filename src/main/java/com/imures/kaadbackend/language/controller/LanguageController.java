@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,7 +18,6 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/language")
 @RequiredArgsConstructor
-@CrossOrigin("http://localhost:4200/")
 public class LanguageController {
 
     private final LanguageService languageService;
@@ -41,6 +41,7 @@ public class LanguageController {
         return new ResponseEntity<>(languageService.getLanguageImage(languageId), HttpStatus.OK);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping
     public ResponseEntity<LanguageResponse> createLanguage(
         @RequestPart("body") LanguageRequest languageRequest,
@@ -49,6 +50,7 @@ public class LanguageController {
         return new ResponseEntity<>(languageService.createLanguage(languageRequest, image), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PutMapping(path = "{languageId}")
     public ResponseEntity<LanguageResponse> updateLanguage(
             @PathVariable Long languageId,
@@ -57,7 +59,7 @@ public class LanguageController {
     ) throws IOException {
         return new ResponseEntity<>(languageService.updateLanguage(languageId, languageRequest, image), HttpStatus.OK);
     }
-    @CrossOrigin(origins = "http://localhost:4200")
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping(path = "{languageId}")
     public ResponseEntity<Void> deleteLanguage(
             @PathVariable Long languageId
@@ -66,7 +68,6 @@ public class LanguageController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping(value = "/**", method = RequestMethod.OPTIONS)
     public ResponseEntity<?> handleOptions() {
         return ResponseEntity.ok().build();

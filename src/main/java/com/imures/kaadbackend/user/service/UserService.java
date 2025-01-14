@@ -8,6 +8,7 @@ import com.imures.kaadbackend.user.controller.request.AuthenticationRequest;
 import com.imures.kaadbackend.user.controller.request.PasswordRequest;
 import com.imures.kaadbackend.user.controller.request.UserRequest;
 import com.imures.kaadbackend.user.controller.response.AuthenticationResponse;
+import com.imures.kaadbackend.user.controller.response.UserPutResponse;
 import com.imures.kaadbackend.user.entity.User;
 import com.imures.kaadbackend.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -52,6 +53,7 @@ public class UserService {
         User newUser = new User();
 
         BeanUtils.copyProperties(details, newUser);
+        newUser.setEmail(newUser.getEmail().trim().toLowerCase());
         newUser.setIsEnabled(true);
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
 
@@ -78,6 +80,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        request.setLogin(request.getLogin().trim().toLowerCase());
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getLogin(),
@@ -159,5 +162,33 @@ public class UserService {
                 .orElseThrow(()-> new UsernameNotFoundException("User does not exists"));
         user.setPassword(passwordEncoder.encode(password.getPassword().trim()));
         userRepository.save(user);
+    }
+
+    @Transactional
+    public UserPutResponse updateUser(UserRequest request, MultipartFile image, String token) throws IOException {
+        if(jwtService.isTokenExpired(token)){
+            throw new AccessDeniedException("Session expired");
+        }
+        String userMail = jwtService.extractUsername(token);
+
+        User user = userRepository.findUserByEmail(userMail)
+                .orElseThrow(()-> new UsernameNotFoundException("User does not exists"));
+
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setEmail(request.getEmail());
+
+        if(image != null){
+            user.setBlogImage(image.getBytes());
+        }
+
+        userRepository.save(user);
+
+        UserPutResponse response = new UserPutResponse();
+        response.setFirstName(user.getFirstName());
+        response.setLastName(user.getLastName());
+        response.setEmail(user.getEmail());
+
+        return response;
     }
 }

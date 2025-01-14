@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,7 +20,6 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/specialization")
 @RequiredArgsConstructor
-    @CrossOrigin("http://localhost:4200/")
 public class SpecializationController {
 
     private final SpecializationService specializationService;
@@ -64,6 +64,7 @@ public class SpecializationController {
         return new ResponseEntity<>(specializationService.getSpecializationPhoto(specId), HttpStatus.OK);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping
     public ResponseEntity<SpecializationResponse> createSpecialization(
             @Nullable @RequestPart("image") MultipartFile image,
@@ -72,6 +73,7 @@ public class SpecializationController {
         return new ResponseEntity<>(specializationService.createSpecialization(image, specializationRequest), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PutMapping(path = "{specId}")
     public ResponseEntity<SpecializationResponse> updateSpecialization(
             @RequestPart("image") @Nullable MultipartFile image,
@@ -81,6 +83,7 @@ public class SpecializationController {
         return new ResponseEntity<>(specializationService.updateSpecialization(image, specializationRequest, specId), HttpStatus.OK);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping(path = "{specId}")
     public ResponseEntity<Void> deleteSpecialization(
             @PathVariable Long specId
@@ -109,6 +112,7 @@ public class SpecializationController {
         return new ResponseEntity<>(specializationService.getSpecializationPagePhoto(specId), HttpStatus.OK);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping(path = "{specId}/page/photo")
     public ResponseEntity<Void> deleteSpecializationPagePhoto(
             @PathVariable Long specId
@@ -117,6 +121,7 @@ public class SpecializationController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping(path = {"{specId}/page"})
     public ResponseEntity<SpecializationPageResponse> createSpecializationPage(
             @PathVariable Long specId,
@@ -126,6 +131,7 @@ public class SpecializationController {
         return new ResponseEntity<>(specializationService.createSpecializationPage(specializationPageRequest, image, specId), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PutMapping(path = {"{specId}/page"})
     public ResponseEntity<SpecializationPageResponse> updateSpecializationPage(
             @PathVariable Long specId,
@@ -135,6 +141,7 @@ public class SpecializationController {
         return new ResponseEntity<>(specializationService.updateSpecializationPage(specializationPageRequest, image, specId), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping(path = {"{specId}/page"})
     public ResponseEntity<Void> deleteSpecializationPage(
             @PathVariable Long specId,

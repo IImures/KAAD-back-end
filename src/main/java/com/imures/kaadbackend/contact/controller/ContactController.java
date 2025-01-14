@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,18 +21,12 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/contact")
 @RequiredArgsConstructor
-@CrossOrigin("http://localhost:4200/")
 public class ContactController {
 
 
     private final ContactService contactService;
 
-
-//    @GetMapping
-//    public ResponseEntity<List<ContactResponse>> getAllContact() {
-//        return ResponseEntity.ok().body(contactService.getAllContacts());
-//    }
-
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public ResponseEntity<Page<ContactResponse>> getContacts(
             @RequestParam(
@@ -64,6 +59,7 @@ public class ContactController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping(path = "{contactId}")
     public ResponseEntity<ContactResponse> getContactById(
             @PathVariable Long contactId
@@ -78,6 +74,7 @@ public class ContactController {
         return new ResponseEntity<>(contactService.createContact(contactRequest), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PutMapping(path = "{contactId}")
     public ResponseEntity<ContactResponse> updateContact(
             @RequestBody ContactRequest contactRequest,
@@ -87,7 +84,7 @@ public class ContactController {
     }
 
     //TODO DO resolved feature
-
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping(path = "{contactId}")
     public ResponseEntity<Void> deleteContact(
             @PathVariable Long contactId

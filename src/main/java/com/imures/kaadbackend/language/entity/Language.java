@@ -23,7 +23,7 @@ public class Language {
     private Boolean defaultLanguage;
 
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = true)
     @Basic(fetch = FetchType.LAZY)
     private byte[] imageData;
 

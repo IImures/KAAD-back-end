@@ -95,9 +95,18 @@ public class PostService {
         return posts.map(postMapper::fromEntityToResponse);
     }
 
+    @Transactional(readOnly = true)
     public byte[] getAuthorImage(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Post with id %s not found", postId)))
                 .getAuthor().getBlogImage();
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PostResponse> getByAuthor(String author, Pageable pageRequest) {
+        User user = userRepository.findUserByEmail(author)
+                .orElseThrow(()-> new EntityNotFoundException(String.format("User %s not found", author)));
+
+        return postRepository.findByAuthor(user, pageRequest).map(postMapper::fromEntityToResponse);
     }
 }

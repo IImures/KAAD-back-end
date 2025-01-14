@@ -7,6 +7,7 @@ import com.imures.kaadbackend.generalinfo.service.GeneralInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,23 +15,17 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/gen-inf")
 @RequiredArgsConstructor
-@CrossOrigin("http://localhost:4200/")
 public class GeneralInfoController {
 
     private final GeneralInfoService generalInfoService;
     private final GeneralInfoMapperImpl generalInfoMapper;
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public ResponseEntity<List<GeneralInfoResponse>> getAll(){
         return new ResponseEntity<>(generalInfoService.getAll(), HttpStatus.OK);
     }
 
-//    @GetMapping("{genId}")
-//    public ResponseEntity<GeneralInfoResponse> getById(
-//            @PathVariable Long genId
-//    ){
-//        return new ResponseEntity<>(generalInfoService.getById(genId), HttpStatus.OK);
-//    }
     @GetMapping("{generalCode}")
     public ResponseEntity<GeneralInfoResponse> getByCodeAndLanguage(
             @PathVariable String generalCode,
@@ -49,6 +44,7 @@ public class GeneralInfoController {
         return new ResponseEntity<>(generalInfoService.getLabels(), HttpStatus.OK);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping
     public ResponseEntity<GeneralInfoResponse> createGeneralInfo(
             @RequestBody GeneralInfoRequest generalInfoRequest
@@ -61,6 +57,7 @@ public class GeneralInfoController {
         );
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping(path ="many")
     public ResponseEntity<List<GeneralInfoResponse>> createManyGeneralInfos(
             @RequestBody List<GeneralInfoRequest> generalInfoRequest
@@ -71,7 +68,7 @@ public class GeneralInfoController {
         );
     }
 
-
+    @PreAuthorize("isAuthenticated()")
     @PutMapping
     public ResponseEntity<GeneralInfoResponse> updateGeneralInfo(
             @RequestBody GeneralInfoRequest generalInfoRequest,
@@ -85,6 +82,7 @@ public class GeneralInfoController {
         return new ResponseEntity<>(generalInfoService.update(generalInfoRequest, languageCode, code), HttpStatus.OK);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("{genId}")
     public ResponseEntity<Void> deleteGeneralInfo(
             @PathVariable Long genId

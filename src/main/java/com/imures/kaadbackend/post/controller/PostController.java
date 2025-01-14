@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
@@ -20,7 +21,6 @@ import java.nio.file.AccessDeniedException;
 @RestController
 @RequestMapping("api/v1/post")
 @RequiredArgsConstructor
-@CrossOrigin("http://localhost:4200/")
 public class PostController {
 
     private final PostService postService;
@@ -62,6 +62,7 @@ public class PostController {
         return new ResponseEntity<>(postService.getAuthorImage(postId), HttpStatus.OK);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping
     public ResponseEntity<PostResponse> createPost(
             @RequestBody PostRequest postRequest,
@@ -71,6 +72,7 @@ public class PostController {
         return new ResponseEntity<>(postService.createPost(postRequest, author), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PutMapping(path = "{postId}")
     public ResponseEntity<PostResponse> updatePost(
             @PathVariable Long postId,
@@ -81,6 +83,7 @@ public class PostController {
         return new ResponseEntity<>(postService.updatePost(postId, postRequest, author), HttpStatus.OK);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping(path = "{postId}")
     public ResponseEntity<PostResponse> deletePost(
             @PathVariable Long postId,
@@ -89,6 +92,32 @@ public class PostController {
         String author = jwtService.extractUsername(token.substring(7));
         postService.deletePost(postId, author);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping(path = "author")
+    public ResponseEntity<Page<PostResponse>> getPostByAuthor(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+            @RequestParam(
+                    value = "page",
+                    required = false,
+                    defaultValue = "0"
+            ) int page,
+            @RequestParam(
+                    value = "limit",
+                    required = false,
+                    defaultValue = "20"
+            ) int limit,
+            @RequestParam(
+                    value = "sort",
+                    required = false,
+                    defaultValue = "createdAt"
+            ) String sortBy
+
+    ) {
+        Pageable pageRequest = PageRequest.of(page, limit, Sort.by(sortBy).descending());
+        String author = jwtService.extractUsername(token.substring(7));
+        return new ResponseEntity<>(postService.getByAuthor(author, pageRequest), HttpStatus.OK);
     }
 
 }

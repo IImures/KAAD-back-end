@@ -56,14 +56,19 @@ public class User implements UserDetails {
     private Set<Post> posts;
 
     public byte[] getBlogImage() {
+        if(blogImage == null) return null;
         return blogImage.getImageData();
     }
 
     public void setBlogImage(byte[] blogImage) {
-        UserImage userImage = new UserImage();
-        userImage.setImageData(blogImage);
-        userImage.setUser(this);
-        this.blogImage = userImage;
+        if(blogImage != null) {
+            this.blogImage.setImageData(blogImage);
+        }else {
+            UserImage userImage = new UserImage();
+            userImage.setImageData(blogImage);
+            userImage.setUser(this);
+            this.blogImage = userImage;
+        }
     }
 
     @Override

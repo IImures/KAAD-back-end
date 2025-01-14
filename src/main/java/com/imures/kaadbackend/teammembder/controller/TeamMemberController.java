@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,7 +18,6 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/team-member")
 @RequiredArgsConstructor
-@CrossOrigin("http://localhost:4200/")
 public class TeamMemberController {
 
     private final TeamMemberService teamMemberService;
@@ -52,6 +52,7 @@ public class TeamMemberController {
         return new ResponseEntity<>(teamMemberService.getMembers(languageCode), HttpStatus.OK);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping
     public ResponseEntity<TeamMemberResponse> createTeamMember(
            @RequestPart("body") TeamMemberRequest teamMemberRequest,
@@ -61,6 +62,7 @@ public class TeamMemberController {
         return new ResponseEntity<>(teamMemberService.createMember(teamMemberRequest, image), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PutMapping(path = "{memberId}")
     public ResponseEntity<TeamMemberResponse> updateTeamMember(
             @RequestPart("body") TeamMemberRequest teamMemberRequest,
@@ -71,6 +73,7 @@ public class TeamMemberController {
         return new ResponseEntity<>(teamMemberService.updateMember(teamMemberRequest, image, memberId), HttpStatus.OK);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping(path = "{memberId}")
     public ResponseEntity<Void> deleteTeamMember(
             @PathVariable Long memberId

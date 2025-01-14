@@ -28,21 +28,7 @@ public class Security{
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         auth ->
-                                auth
-                                        //.requestMatchers("api/v1/user/blog-image").hasRole("Admin")
-//                                        .requestMatchers("api/v1/user/**")
-//                                        .permitAll()
-//                                        .requestMatchers(HttpMethod.GET, "api/v1/catalog/**")
-//                                        .permitAll()
-//                                        .requestMatchers(HttpMethod.GET, "api/v1/sub-catalog/**")
-//                                        .permitAll()
-//                                        .requestMatchers(HttpMethod.GET, "api/v1/producer/**")
-//                                        .permitAll()
-//                                        .requestMatchers(HttpMethod.GET, "api/v1/product/**")
-//                                        .permitAll()
-                                        .anyRequest()
-//                                        .authenticated()
-                                        .permitAll()
+                                auth.anyRequest().permitAll()
                 )
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
